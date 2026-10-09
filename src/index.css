@@ -1,0 +1,257 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 225 60% 97%;
+    --foreground: 220 20% 20%;
+    --card: 0 0% 100%;
+    --card-foreground: 220 20% 20%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 20% 20%;
+    --primary: 224 76% 53%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 225 60% 94%;
+    --secondary-foreground: 224 76% 48%;
+    --muted: 225 30% 96%;
+    --muted-foreground: 220 10% 50%;
+    --accent: 224 76% 53%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --success: 160 84% 39%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 0%;
+    --critical: 0 84% 55%;
+    --critical-foreground: 0 0% 100%;
+    --border: 225 20% 91%;
+    --input: 225 20% 91%;
+    --ring: 224 76% 53%;
+    --radius: 0.75rem;
+
+    /* Glassmorphism tokens */
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.9);
+    --glass-blur: 20px;
+    --glass-shadow: 0 8px 32px rgba(37, 99, 235, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+    --glass-shadow-hover: 0 12px 40px rgba(37, 99, 235, 0.14), 0 4px 12px rgba(0, 0, 0, 0.06);
+    --page-bg: #F0F4FF;
+  }
+
+  .dark {
+    --background: 220 20% 10%;
+    --foreground: 0 0% 95%;
+    --card: 220 20% 14%;
+    --card-foreground: 0 0% 95%;
+    --primary: 224 76% 58%;
+    --primary-foreground: 220 20% 10%;
+    --muted: 220 20% 18%;
+    --muted-foreground: 220 10% 60%;
+    --border: 220 20% 25%;
+
+    --glass-bg: rgba(30, 41, 59, 0.7);
+    --glass-border: rgba(51, 65, 85, 0.6);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.2);
+    --glass-shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(0, 0, 0, 0.25);
+    --page-bg: #0f172a;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  }
+}
+
+@layer components {
+  /* Glass card */
+  .glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    border-radius: 20px;
+    transition: all 300ms ease;
+  }
+
+  .glass-card:hover {
+    box-shadow: var(--glass-shadow-hover);
+  }
+
+  /* Glass card with glow border */
+  .glass-glow-blue {
+    box-shadow: var(--glass-shadow), 0 0 20px rgba(37, 99, 235, 0.12), inset 0 0 0 1px rgba(37, 99, 235, 0.1);
+  }
+  .glass-glow-green {
+    box-shadow: var(--glass-shadow), 0 0 20px rgba(16, 185, 129, 0.12), inset 0 0 0 1px rgba(16, 185, 129, 0.1);
+  }
+  .glass-glow-red {
+    box-shadow: var(--glass-shadow), 0 0 20px rgba(239, 68, 68, 0.12), inset 0 0 0 1px rgba(239, 68, 68, 0.1);
+  }
+  .glass-glow-amber {
+    box-shadow: var(--glass-shadow), 0 0 20px rgba(245, 158, 11, 0.12), inset 0 0 0 1px rgba(245, 158, 11, 0.1);
+  }
+
+  /* Gradient icon container */
+  .gradient-icon-blue {
+    background: linear-gradient(135deg, #2563EB 0%, #3B82F6 50%, #60A5FA 100%);
+  }
+  .gradient-icon-red {
+    background: linear-gradient(135deg, #DC2626 0%, #EF4444 50%, #F87171 100%);
+  }
+  .gradient-icon-green {
+    background: linear-gradient(135deg, #059669 0%, #10B981 50%, #34D399 100%);
+  }
+  .gradient-icon-orange {
+    background: linear-gradient(135deg, #D97706 0%, #F59E0B 50%, #FBBF24 100%);
+  }
+  .gradient-icon-indigo {
+    background: linear-gradient(135deg, #4338CA 0%, #6366F1 50%, #818CF8 100%);
+  }
+  .gradient-icon-teal {
+    background: linear-gradient(135deg, #0D9488 0%, #14B8A6 50%, #5EEAD4 100%);
+  }
+}
+
+@layer utilities {
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .page-bg {
+    background-color: var(--page-bg);
+  }
+}
+
+/* =========== ANIMATIONS =========== */
+
+/* Staggered fade up entrance */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.anim-fade-up {
+  animation: fadeUp 0.6s ease-out both;
+}
+
+/* Stagger delays */
+.anim-delay-0 { animation-delay: 0ms; }
+.anim-delay-1 { animation-delay: 50ms; }
+.anim-delay-2 { animation-delay: 100ms; }
+.anim-delay-3 { animation-delay: 150ms; }
+.anim-delay-4 { animation-delay: 200ms; }
+.anim-delay-5 { animation-delay: 250ms; }
+.anim-delay-6 { animation-delay: 300ms; }
+.anim-delay-7 { animation-delay: 350ms; }
+.anim-delay-8 { animation-delay: 400ms; }
+.anim-delay-9 { animation-delay: 450ms; }
+.anim-delay-10 { animation-delay: 500ms; }
+.anim-delay-11 { animation-delay: 550ms; }
+
+/* Animated gradient ring for avatar */
+@keyframes gradientRotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.avatar-ring {
+  background: conic-gradient(from 0deg, #2563EB, #10B981, #6366F1, #2563EB);
+  animation: gradientRotate 4s linear infinite;
+  border-radius: 50%;
+  padding: 3px;
+}
+
+/* Live pulse indicator */
+@keyframes livePulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.6); }
+}
+
+.live-pulse {
+  position: relative;
+}
+
+.live-pulse::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: inherit;
+  animation: livePulse 2s ease-in-out infinite;
+  z-index: -1;
+}
+
+/* Shimmer effect for badges */
+@keyframes shimmer {
+  0% { background-position: 200% center; }
+  100% { background-position: -200% center; }
+}
+
+.shimmer-badge {
+  background: linear-gradient(
+    90deg,
+    #2563EB 0%,
+    #60A5FA 25%,
+    #2563EB 50%,
+    #60A5FA 75%,
+    #2563EB 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 3s linear infinite;
+  color: white;
+}
+
+/* Countup animation helper (visual, actual counting done in JS) */
+@keyframes countFadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.count-animate {
+  animation: countFadeIn 0.8s ease-out both;
+}
+
+/* Gradient text */
+.text-gradient-blue {
+  background: linear-gradient(135deg, #2563EB, #6366F1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-gold {
+  background: linear-gradient(135deg, #D97706, #F59E0B, #FBBF24);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* SVG Gradient stroke for progress rings */
+.progress-ring-gradient stop:first-child { stop-color: #2563EB; }
+.progress-ring-gradient stop:last-child { stop-color: #6366F1; }
+
+/* Animated volunteer button */
+@keyframes buttonGlow {
+  0%, 100% { box-shadow: 0 0 20px rgba(37, 99, 235, 0.3); }
+  50% { box-shadow: 0 0 30px rgba(37, 99, 235, 0.5), 0 0 60px rgba(37, 99, 235, 0.15); }
+}
+
+.btn-glow {
+  animation: buttonGlow 2s ease-in-out infinite;
+}
