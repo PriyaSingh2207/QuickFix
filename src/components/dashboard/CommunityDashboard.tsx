@@ -22,6 +22,7 @@ import { AnnouncementsPanel } from "./AnnouncementsPanel";
 import { NearbyCivicCarousel } from "./NearbyCivicCarousel";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { getAvatarUrl } from "@/lib/avatars";
 
 // --- City Skyline SVG ---
 function CitySkyline() {
@@ -234,8 +235,8 @@ export function CommunityDashboard() {
                             <div className="flex items-center gap-4">
                                 {/* Animated Gradient Avatar Ring */}
                                 <div className="avatar-ring cursor-pointer" onClick={() => navigate('/profile')}>
-                                    <Avatar className="h-14 w-14 border-[3px] border-white dark:border-slate-900">
-                                        <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${profile ? profile.name : 'Citizen'}`} />
+                                    <Avatar className="h-14 w-14 border-[3px] border-white dark:border-slate-900 bg-white dark:bg-slate-800">
+                                        <AvatarImage src={getAvatarUrl(profile?.avatar_url, profile ? profile.name : 'Citizen')} />
                                         <AvatarFallback className="text-lg font-bold">{profile ? profile.name[0] : 'C'}</AvatarFallback>
                                     </Avatar>
                                 </div>

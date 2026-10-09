@@ -13,6 +13,7 @@ import { formatDistanceToNow } from "date-fns";
 
 import { getHighPrecisionCoordinates } from "@/services/location/preciseGeolocation";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { getAvatarUrl, getDefaultAvatar } from "@/lib/avatars";
 
 export function Complaints() {
     const { t } = useLanguage();
@@ -63,7 +64,7 @@ export function Complaints() {
                     author: {
                         name: 'You (Citizen)',
                         role: 'Citizen',
-                        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=You'
+                        avatar: getDefaultAvatar('You')
                     },
                     stats: {
                         supports: 1,
@@ -95,7 +96,7 @@ export function Complaints() {
                 author: item.author || {
                     name: 'Citizen',
                     role: 'Citizen',
-                    avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${item.id}`
+                    avatar: getDefaultAvatar(item.id)
                 },
                 stats: {
                     supports: item.supports_count || item.stats?.supports || 0,

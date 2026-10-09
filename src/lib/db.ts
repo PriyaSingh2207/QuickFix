@@ -1,4 +1,5 @@
 import { supabase } from './supabase';
+import { getAvatarUrl } from './avatars';
 
 // --- Utilities ---
 async function withRetry<T>(
@@ -270,7 +271,7 @@ export const db = {
                 author: {
                     name: c.profiles?.name || 'Anonymous',
                     role: c.profiles?.role || 'Citizen',
-                    avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${c.profiles?.name || c.user_id}`
+                    avatar: getAvatarUrl(c.profiles?.avatar_url, c.profiles?.name || c.user_id)
                 }
             }));
 
@@ -686,7 +687,7 @@ export const db = {
             return data.map((p: any) => ({
                 id: p.id,
                 name: p.name || 'Citizen',
-                avatar_url: `https://api.dicebear.com/7.x/avataaars/svg?seed=${p.name || p.id}`,
+                avatar_url: getAvatarUrl(p.avatar_url, p.name || p.id),
                 city: p.city || 'Indore',
                 points: p.points || 0,
                 reports_count: p.reports_count || 0,
@@ -805,7 +806,7 @@ export const db = {
                 author: {
                     name: c.profiles?.name || 'Anonymous',
                     role: c.profiles?.role || 'Citizen',
-                    avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${c.profiles?.name || c.user_id}`
+                    avatar: getAvatarUrl(c.profiles?.avatar_url, c.profiles?.name || c.user_id)
                 }
             }));
         });
@@ -851,7 +852,7 @@ export const db = {
                 author: {
                     name: c.profiles?.name || 'Anonymous',
                     role: c.profiles?.role || 'Citizen',
-                    avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${c.profiles?.name || c.user_id}`
+                    avatar: getAvatarUrl(c.profiles?.avatar_url, c.profiles?.name || c.user_id)
                 }
             }));
         });

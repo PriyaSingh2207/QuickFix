@@ -8,6 +8,7 @@ import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/contexts/AuthContext";
 import { formatDistanceToNow } from "date-fns";
 import { toast } from "sonner";
+import { getDefaultAvatar } from "@/lib/avatars";
 
 interface Comment {
     id: string;
@@ -139,8 +140,8 @@ export function CommentsSection({ parentId, parentType, onCommentAdded }: Commen
                 ) : (
                     comments.map((comment) => (
                         <div key={comment.id} className="flex gap-3">
-                            <Avatar className="h-8 w-8 mt-1 border border-white shadow-sm">
-                                <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${comment.author_name}`} />
+                            <Avatar className="h-8 w-8 mt-1 border border-white dark:border-slate-800 shadow-sm bg-white dark:bg-slate-900">
+                                <AvatarImage src={getDefaultAvatar(comment.author_name)} />
                                 <AvatarFallback>{comment.author_name[0]}</AvatarFallback>
                             </Avatar>
                             <div className="flex-1 space-y-1">

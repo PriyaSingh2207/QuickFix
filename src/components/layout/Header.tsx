@@ -32,6 +32,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { LanguageSelector } from "@/components/common/LanguageSelector";
+import { getAvatarUrl } from "@/lib/avatars";
 
 interface HeaderProps {
     mode: AppMode;
@@ -254,7 +255,7 @@ export function Header({ mode, onMenuToggle }: HeaderProps) {
                         <DropdownMenuTrigger asChild>
                             <Button variant="ghost" size="icon" className="rounded-full h-10 w-10 p-0 border border-border/50 bg-background shadow-sm hover:shadow-md transition-all ml-1">
                                 <Avatar className="h-full w-full ring-2 ring-offset-2 ring-offset-background ring-transparent group-hover:ring-primary/20 transition-all">
-                                    <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${profile?.name || 'User'}`} />
+                                    <AvatarImage src={getAvatarUrl(profile?.avatar_url, profile?.name || 'User')} />
                                     <AvatarFallback>{profile?.name?.[0] || 'U'}</AvatarFallback>
                                 </Avatar>
                             </Button>
@@ -264,7 +265,7 @@ export function Header({ mode, onMenuToggle }: HeaderProps) {
                             <div className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-lg p-4 mb-2 border border-primary/10">
                                 <div className="flex items-center gap-3 mb-3">
                                     <Avatar className="h-10 w-10 border-2 border-background shadow-sm">
-                                        <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${profile?.name || 'User'}`} />
+                                        <AvatarImage src={getAvatarUrl(profile?.avatar_url, profile?.name || 'User')} />
                                         <AvatarFallback>{profile?.name?.[0] || 'U'}</AvatarFallback>
                                     </Avatar>
                                     <div>

@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { getAvatarUrl } from "@/lib/avatars";
 import { cn } from '@/lib/utils';
 import type { AppMode } from '@/types';
 
@@ -97,7 +98,7 @@ export function Sidebar({ mode, isOpen, activeItem, onItemClick, onClose }: Side
                         <div className="relative z-10 flex items-center gap-4 mb-6">
                             <div className="relative">
                                 <Avatar className="h-12 w-12 border-2 border-white shadow-md ring-2 ring-teal-50 transition-transform hover:scale-105">
-                                    <AvatarImage src={profile?.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${profile?.name || 'User'}`} />
+                                    <AvatarImage src={getAvatarUrl(profile?.avatar_url, profile?.name || 'User')} />
                                     <AvatarFallback>{profile?.name?.[0] || 'U'}</AvatarFallback>
                                 </Avatar>
                                 <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-green-500 ring-2 ring-white"></span>

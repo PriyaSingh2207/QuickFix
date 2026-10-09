@@ -17,12 +17,13 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import { ArrowLeft, MapPin, Award, Edit2, Loader2 } from "lucide-react";
+import { ArrowLeft, MapPin, Award, Edit2, Loader2, Check } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MyComplaintsList } from "@/components/profile/MyComplaintsList";
 import { MyRepostsList } from "@/components/profile/MyRepostsList";
+import { AVATAR_LIST, getAvatarUrl } from "@/lib/avatars";
 
 export default function ProfilePage() {
     const { profile, refreshProfile, loading } = useAuth();
@@ -34,7 +35,8 @@ export default function ProfilePage() {
     const [formData, setFormData] = useState({
         name: "",
         phone: "",
-        city: ""
+        city: "",
+        avatar_url: ""
     });
 
     useEffect(() => {
@@ -42,7 +44,8 @@ export default function ProfilePage() {
             setFormData({
                 name: profile.name || "",
                 phone: profile.phone || "",
-                city: profile.city || ""
+                city: profile.city || "",
+                avatar_url: profile.avatar_url || ""
             });
         }
     }, [profile]);
@@ -54,7 +57,8 @@ export default function ProfilePage() {
             await db.updateProfile(profile.id, {
                 name: formData.name,
                 phone: formData.phone,
-                city: formData.city
+                city: formData.city,
+                avatar_url: formData.avatar_url
             });
             await refreshProfile();
             setIsEditing(false);
@@ -81,8 +85,8 @@ export default function ProfilePage() {
                 <Card className="w-full md:w-1/3 relative overflow-hidden">
                     <div className="absolute top-0 left-0 w-full h-24 bg-gradient-to-r from-blue-500 to-indigo-600 opacity-10"></div>
                     <CardHeader className="text-center relative z-10 pt-12">
-                        <Avatar className="h-24 w-24 mx-auto mb-4 border-4 border-white shadow-lg">
-                            <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${profile.name}`} />
+                        <Avatar className="h-24 w-24 mx-auto mb-4 border-4 border-white dark:border-slate-800 shadow-lg bg-white dark:bg-slate-900">
+                            <AvatarImage src={getAvatarUrl(profile.avatar_url, profile.name)} />
                             <AvatarFallback>{profile.name[0]}</AvatarFallback>
                         </Avatar>
                         <CardTitle className="text-2xl">{profile.name}</CardTitle>
@@ -99,14 +103,47 @@ export default function ProfilePage() {
                                     <Edit2 className="h-4 w-4" /> Edit Profile
                                 </Button>
                             </DialogTrigger>
-                            <DialogContent className="sm:max-w-[425px]">
+                            <DialogContent className="sm:max-w-[540px]">
                                 <DialogHeader>
                                     <DialogTitle>Edit Profile</DialogTitle>
                                     <DialogDescription>
-                                        Make changes to your profile here. Click save when you're done.
+                                        Update your personal details and choose your character avatar.
                                     </DialogDescription>
                                 </DialogHeader>
-                                <div className="grid gap-4 py-4">
+                                <div className="space-y-4 py-2">
+                                    {/* Avatar Picker */}
+                                    <div className="space-y-2">
+                                        <div className="flex items-center justify-between">
+                                            <Label className="text-xs font-semibold">Profile Avatar (30 Characters)</Label>
+                                            <span className="text-[11px] text-muted-foreground">Select one below</span>
+                                        </div>
+                                        <div className="grid grid-cols-6 gap-2 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 max-h-48 overflow-y-auto custom-scrollbar">
+                                            {AVATAR_LIST.map((url, idx) => {
+                                                const currentSelected = formData.avatar_url || getAvatarUrl(profile.avatar_url, profile.name);
+                                                const isSelected = currentSelected === url;
+                                                return (
+                                                    <button
+                                                        type="button"
+                                                        key={url}
+                                                        onClick={() => setFormData({ ...formData, avatar_url: url })}
+                                                        className={`relative aspect-square rounded-xl p-1 cursor-pointer transition-all hover:scale-105 flex items-center justify-center border-2 ${
+                                                            isSelected
+                                                                ? 'border-blue-600 bg-blue-50 dark:bg-blue-950/40 ring-2 ring-blue-400/40'
+                                                                : 'border-transparent bg-white dark:bg-slate-900 hover:border-slate-300 dark:hover:border-slate-700'
+                                                        }`}
+                                                    >
+                                                        <img src={url} alt={`Avatar ${idx + 1}`} className="h-full w-full object-contain" />
+                                                        {isSelected && (
+                                                            <div className="absolute -top-1 -right-1 h-3.5 w-3.5 bg-blue-600 rounded-full border border-white flex items-center justify-center">
+                                                                <Check className="h-2.5 w-2.5 text-white" />
+                                                            </div>
+                                                        )}
+                                                    </button>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+
                                     <div className="grid grid-cols-4 items-center gap-4">
                                         <Label htmlFor="name" className="text-right">
                                             Name

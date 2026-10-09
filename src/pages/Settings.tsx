@@ -11,6 +11,7 @@ import { ArrowLeft, Loader2, Save, User, Bell, Monitor, Shield, Languages } from
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { LanguageSelector } from "@/components/common/LanguageSelector";
+import { AVATAR_LIST, getAvatarUrl } from "@/lib/avatars";
 
 export default function Settings() {
     const { profile, user, refreshProfile } = useAuth();
@@ -24,9 +25,6 @@ export default function Settings() {
         phone: "",
         avatar_url: ""
     });
-
-    // Avatar Presets (Using Dicebear seeds)
-    const avatarSeeds = ["Felix", "Aneka", "Molly", "Garfield", "Tinkerbell", "Bandit", "Shadow", "Coco"];
 
     // App/Notification state
     const [settings, setSettings] = useState<UserSettings | null>(null);
@@ -124,29 +122,40 @@ export default function Settings() {
 
                     {/* Avatar Selection */}
                     <div className="space-y-3">
-                        <Label>Choose Avatar</Label>
-                        <div className="flex flex-wrap gap-4">
-                            {avatarSeeds.map((seed) => {
-                                const url = `https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}`;
-                                const isSelected = accountData.avatar_url === url || (!accountData.avatar_url && seed === (profile?.name || 'User'));
+                        <div className="flex items-center justify-between">
+                            <Label className="text-sm font-semibold">Choose Your Avatar (30 Illustrated Characters)</Label>
+                            <span className="text-xs text-muted-foreground">Click to select</span>
+                        </div>
+                        <div className="grid grid-cols-5 sm:grid-cols-6 md:grid-cols-10 gap-2.5 p-3 rounded-2xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 max-h-72 overflow-y-auto custom-scrollbar">
+                            {AVATAR_LIST.map((url, idx) => {
+                                const currentAvatar = getAvatarUrl(accountData.avatar_url, profile?.name || 'User');
+                                const isSelected = accountData.avatar_url === url || (!accountData.avatar_url && currentAvatar === url);
 
                                 return (
-                                    <div
-                                        key={seed}
+                                    <button
+                                        type="button"
+                                        key={url}
                                         onClick={() => setAccountData({ ...accountData, avatar_url: url })}
-                                        className={`relative h-16 w-16 rounded-full cursor-pointer transition-all hover:scale-110 border-2 ${isSelected ? 'border-teal-600 ring-2 ring-teal-100 ring-offset-2' : 'border-slate-200 dark:border-slate-700'}`}
+                                        className={`relative group aspect-square rounded-2xl p-1.5 cursor-pointer transition-all duration-200 hover:scale-110 flex items-center justify-center border-2 ${
+                                            isSelected
+                                                ? 'border-blue-600 bg-blue-50 dark:bg-blue-950/50 shadow-md ring-2 ring-blue-400/40'
+                                                : 'border-transparent bg-white dark:bg-slate-900 hover:border-slate-300 dark:hover:border-slate-700'
+                                        }`}
                                     >
-                                        <img src={url} alt={seed} className="h-full w-full rounded-full" />
+                                        <img
+                                            src={url}
+                                            alt={`Avatar ${idx + 1}`}
+                                            className="h-full w-full object-contain transition-transform group-hover:scale-105"
+                                            loading="lazy"
+                                        />
                                         {isSelected && (
-                                            <div className="absolute bottom-0 right-0 h-5 w-5 bg-teal-600 rounded-full border-2 border-white flex items-center justify-center">
-                                                <div className="h-2 w-2 bg-white rounded-full" />
+                                            <div className="absolute -top-1 -right-1 h-4 w-4 bg-blue-600 rounded-full border-2 border-white flex items-center justify-center shadow-sm">
+                                                <div className="h-1.5 w-1.5 bg-white rounded-full" />
                                             </div>
                                         )}
-                                    </div>
+                                    </button>
                                 );
                             })}
-                            {/* Keep the user's current name-based avatar as an option if not in list? 
-                                 Actually, it's better to stick to presets for simplicity as requested. */}
                         </div>
                     </div>
 

@@ -3,6 +3,7 @@ import { User, AlertTriangle, ShieldCheck, ThumbsUp } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { getDefaultAvatar } from "@/lib/avatars";
 import { MOCK_UPDATES } from "./data";
 import { useState } from "react";
 import { motion } from "framer-motion";
@@ -45,8 +46,8 @@ export function CommunityIntelFeed() {
                             <div className={`absolute left-0 top-0 bottom-0 w-1 ${update.user.credibility > 80 ? 'bg-emerald-400' : 'bg-amber-400'}`} />
 
                             <div className="flex gap-3 pl-2">
-                                <Avatar className="w-10 h-10 border-2 border-white shadow-sm">
-                                    <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${update.user.name}`} />
+                                <Avatar className="w-10 h-10 border-2 border-white shadow-sm bg-slate-50">
+                                    <AvatarImage src={getDefaultAvatar(update.user.name)} />
                                     <AvatarFallback>{update.user.name[0]}</AvatarFallback>
                                 </Avatar>
                                 <div className="flex-1">
