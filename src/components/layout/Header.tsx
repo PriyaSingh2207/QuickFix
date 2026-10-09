@@ -176,16 +176,31 @@ export function Header({ mode, onMenuToggle }: HeaderProps) {
                         {t('nav.myComplaints', 'My Complaints')}
                     </Button>
 
-                    {/* City Officer Portal Button */}
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => navigate('/officer-portal')}
-                        className="hidden sm:inline-flex items-center gap-1.5 h-9 rounded-full px-3 text-xs font-bold border-teal-500/50 text-teal-700 dark:text-teal-300 bg-teal-50 dark:bg-teal-950/40 hover:bg-teal-100 dark:hover:bg-teal-900/60 shadow-sm transition-all"
-                    >
-                        <ShieldAlert className="h-3.5 w-3.5 text-teal-600 dark:text-teal-400" />
-                        {t('nav.officerPortal', 'Officer Portal')}
-                    </Button>
+                    {/* City Officer Portal Button - Only visible for Officer role */}
+                    {(profile?.role === 'officer' || profile?.role === 'admin') && (
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => navigate('/officer-portal')}
+                            className="hidden sm:inline-flex items-center gap-1.5 h-9 rounded-full px-3 text-xs font-bold border-teal-500/50 text-teal-700 dark:text-teal-300 bg-teal-50 dark:bg-teal-950/40 hover:bg-teal-100 dark:hover:bg-teal-900/60 shadow-sm transition-all"
+                        >
+                            <ShieldAlert className="h-3.5 w-3.5 text-teal-600 dark:text-teal-400" />
+                            {t('nav.officerPortal', 'Officer Portal')}
+                        </Button>
+                    )}
+
+                    {/* Contractor Portal Button - Only visible for Contractor role */}
+                    {profile?.role === 'contractor' && (
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => navigate('/contractor-portal')}
+                            className="hidden sm:inline-flex items-center gap-1.5 h-9 rounded-full px-3 text-xs font-bold border-amber-500/50 text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/40 hover:bg-amber-100 dark:hover:bg-amber-900/60 shadow-sm transition-all"
+                        >
+                            <Building2 className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
+                            Contractor Desk
+                        </Button>
+                    )}
 
                     {/* Notification Bell */}
                     <DropdownMenu>
@@ -278,15 +293,19 @@ export function Header({ mode, onMenuToggle }: HeaderProps) {
                                 <span>{t('nav.trackComplaints', 'Track My Complaints')}</span>
                             </DropdownMenuItem>
 
-                            <DropdownMenuItem onClick={() => navigate('/officer-portal')} className="cursor-pointer rounded-md focus:bg-teal-50 dark:focus:bg-teal-950/40 text-teal-700 dark:text-teal-300 font-semibold mb-1">
-                                <ShieldAlert className="mr-2 h-4 w-4 text-teal-600" />
-                                <span>{t('nav.officerPortal', 'City Officer Portal')}</span>
-                            </DropdownMenuItem>
+                            {(profile?.role === 'officer' || profile?.role === 'admin') && (
+                                <DropdownMenuItem onClick={() => navigate('/officer-portal')} className="cursor-pointer rounded-md focus:bg-teal-50 dark:focus:bg-teal-950/40 text-teal-700 dark:text-teal-300 font-semibold mb-1">
+                                    <ShieldAlert className="mr-2 h-4 w-4 text-teal-600" />
+                                    <span>{t('nav.officerPortal', 'City Officer Portal')}</span>
+                                </DropdownMenuItem>
+                            )}
 
-                            <DropdownMenuItem onClick={() => navigate('/contractor-portal')} className="cursor-pointer rounded-md focus:bg-amber-50 dark:focus:bg-amber-950/40 text-amber-700 dark:text-amber-300 font-semibold mb-1">
-                                <Building2 className="mr-2 h-4 w-4 text-amber-600" />
-                                <span>Contractor & Tenders Portal</span>
-                            </DropdownMenuItem>
+                            {(profile?.role === 'contractor' || profile?.role === 'admin') && (
+                                <DropdownMenuItem onClick={() => navigate('/contractor-portal')} className="cursor-pointer rounded-md focus:bg-amber-50 dark:focus:bg-amber-950/40 text-amber-700 dark:text-amber-300 font-semibold mb-1">
+                                    <Building2 className="mr-2 h-4 w-4 text-amber-600" />
+                                    <span>Contractor & Tenders Portal</span>
+                                </DropdownMenuItem>
+                            )}
 
                             <DropdownMenuItem onClick={() => navigate('/profile')} className="cursor-pointer rounded-md focus:bg-primary/5 mb-1">
                                 <User className="mr-2 h-4 w-4 text-primary" />

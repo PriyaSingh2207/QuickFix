@@ -28,7 +28,8 @@ import {
   CheckCircle,
   HelpCircle,
   ChevronRight,
-  Info
+  Info,
+  LogOut
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -53,10 +54,13 @@ import type {
   WorkOrderStatus,
   ContractorCategory
 } from '@/types/contractorPortal';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { LanguageSelector } from '@/components/common/LanguageSelector';
+import { useAuth } from '@/contexts/AuthContext';
 
 export function ContractorPortal() {
+  const navigate = useNavigate();
+  const { signOut } = useAuth();
   const [profile, setProfile] = useState<ContractorProfile>(contractorStore.getContractorProfile());
   const [activeTab, setActiveTab] = useState<'dashboard' | 'tenders' | 'generator' | 'work_orders' | 'profile'>('dashboard');
   
@@ -250,17 +254,19 @@ export function ContractorPortal() {
               Toggle Demo Status
             </Button>
 
-            <Link to="/">
-              <Button size="sm" variant="ghost" className="h-8 text-xs text-slate-600 hover:text-slate-900 hover:bg-slate-100">
-                Citizen Portal
-              </Button>
-            </Link>
-
-            <Link to="/officer-portal">
-              <Button size="sm" variant="ghost" className="h-8 text-xs text-slate-600 hover:text-slate-900 hover:bg-slate-100">
-                Officer Portal
-              </Button>
-            </Link>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={async () => {
+                await signOut();
+                navigate('/login?role=contractor');
+              }}
+              className="h-8 text-xs border-slate-200 text-slate-700 hover:text-red-600 hover:border-red-200 hover:bg-red-50 flex items-center gap-1.5"
+              title="Sign out of Contractor Portal"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              <span>Log out</span>
+            </Button>
 
             <LanguageSelector />
           </div>

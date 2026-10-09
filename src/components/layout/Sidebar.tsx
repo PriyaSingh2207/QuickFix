@@ -39,6 +39,8 @@ export function Sidebar({ mode, isOpen, activeItem, onItemClick, onClose }: Side
     const { t } = useLanguage();
     // Fetch removed - relying on context
 
+    const isOfficer = profile?.role === 'officer' || profile?.role === 'admin';
+
     const communityItems = [
         { id: 'dashboard', label: t('nav.dashboard', 'Dashboard'), icon: LayoutDashboard },
         { id: 'complaints', label: t('nav.complaints', 'शिकायत (Complaints)'), icon: FileText },
@@ -47,7 +49,7 @@ export function Sidebar({ mode, isOpen, activeItem, onItemClick, onClose }: Side
         { id: 'events', label: t('nav.events', 'Events'), icon: Calendar },
         { id: 'preparedness', label: t('nav.preparedness', 'Preparedness'), icon: ShieldCheck },
         { id: 'rewards', label: t('nav.rewards', 'Rewards'), icon: Gift },
-        { id: 'officer-portal', label: t('nav.officerPortal', 'Urban Intelligence (Officer)'), icon: ShieldAlert },
+        ...(isOfficer ? [{ id: 'officer-portal', label: t('nav.officerPortal', 'Urban Intelligence (Officer)'), icon: ShieldAlert }] : []),
     ];
 
     const emergencyItems = [
@@ -57,7 +59,7 @@ export function Sidebar({ mode, isOpen, activeItem, onItemClick, onClose }: Side
         { id: 'volunteers', label: 'Volunteers', icon: Users },
         { id: 'shelters', label: 'Shelters', icon: Home },
         { id: 'broadcast', label: 'Broadcast', icon: Megaphone },
-        { id: 'officer-portal', label: t('nav.officerPortal', 'Urban Intelligence (Officer)'), icon: ShieldAlert },
+        ...(isOfficer ? [{ id: 'officer-portal', label: t('nav.officerPortal', 'Urban Intelligence (Officer)'), icon: ShieldAlert }] : []),
     ];
 
     const items = isEmergency ? emergencyItems : communityItems;

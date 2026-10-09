@@ -7,11 +7,12 @@ import {
   Scale,
   Users,
   Download,
-  ArrowLeft
+  LogOut
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { LanguageSelector } from '@/components/common/LanguageSelector';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface OfficerPortalHeaderProps {
   activeIncidentsCount: number;
@@ -31,31 +32,20 @@ export const OfficerPortalHeader: React.FC<OfficerPortalHeaderProps> = ({
   onOpenIntakeTester
 }) => {
   const navigate = useNavigate();
+  const { signOut } = useAuth();
 
   return (
     <div className="bg-white/95 backdrop-blur-md text-slate-900 border-b border-slate-200/80 px-4 py-3 sm:px-6 shadow-sm">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        {/* Left Branding & Mode Toggle */}
+        {/* Left Branding & Portal Identity */}
         <div className="flex items-center gap-3">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => navigate('/')}
-            className="text-slate-600 hover:text-slate-900 hover:bg-slate-100 -ml-2 rounded-lg"
-          >
-            <ArrowLeft className="h-4 w-4 mr-1.5" />
-            Citizen View
-          </Button>
-
-          <div className="h-5 w-px bg-slate-200 hidden sm:block" />
-
           <div>
             <div className="flex items-center gap-2">
               <span className="font-extrabold tracking-tight text-lg text-slate-900">
                 <span data-no-translate="true" className="notranslate">Quickfix</span> <span className="text-teal-600 font-semibold text-sm">Urban Intelligence</span>
               </span>
               <Badge variant="outline" className="border-teal-300 bg-teal-50 text-teal-800 text-[10px] tracking-wider uppercase px-2 py-0.5 rounded-full font-bold">
-                Officer Portal
+                Officer Command Desk
               </Badge>
             </div>
             <p className="text-xs text-slate-500 hidden sm:block">
@@ -111,6 +101,19 @@ export const OfficerPortalHeader: React.FC<OfficerPortalHeaderProps> = ({
             >
               <Download className="h-3.5 w-3.5 mr-1 text-blue-600" />
               Open311
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={async () => {
+                await signOut();
+                navigate('/login?role=officer');
+              }}
+              className="h-8 text-xs bg-white border-slate-200 hover:bg-red-50 hover:text-red-600 hover:border-red-200 text-slate-700 rounded-full shadow-xs flex items-center gap-1"
+              title="Sign out of City Officer Portal"
+            >
+              <LogOut className="h-3.5 w-3.5" />
+              <span>Log out</span>
             </Button>
             <LanguageSelector />
           </div>
