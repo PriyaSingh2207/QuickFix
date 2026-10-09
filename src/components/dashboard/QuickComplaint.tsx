@@ -229,6 +229,11 @@ export function QuickComplaint() {
         }
     };
 
+    const handleCategoryClick = (catId: string) => {
+        setCategory(catId);
+        setIsModalOpen(true);
+    };
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         
