@@ -5,23 +5,17 @@ import {
     Plus,
     Users,
     Gift,
-    Trash2,
-    Car,
-    Zap,
-    Wifi,
     ChevronRight
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { QuickActions } from "@/components/dashboard/QuickActions";
 import { QuickComplaint } from "./QuickComplaint";
 
 import { CityStatusBar } from "./CityStatusBar";
 import { ImpactPanel } from "./ImpactPanel";
 import { CityAlertTimeline } from "./CityAlertTimeline";
 import { CommunityZone } from "./CommunityZone";
-import { CityHeatmap } from "@/components/maps/CityHeatmap";
 import { JoinSquadModal } from "./JoinSquadModal";
 import { CityHeroLeaderboard } from "./CityHeroLeaderboard";
 import { AnnouncementsPanel } from "./AnnouncementsPanel";
@@ -80,22 +74,6 @@ function CitySkyline() {
     );
 }
 
-// --- Service Chip ---
-function ServiceChip({ icon: Icon, title, gradient, onClick }: {
-    icon: any, title: string, gradient: string, onClick: () => void
-}) {
-    return (
-        <button
-            onClick={onClick}
-            className="group flex items-center gap-3 glass-card px-4 py-3 min-w-[160px] cursor-pointer hover:-translate-y-1 transition-all duration-300"
-        >
-            <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-white shrink-0 ${gradient} shadow-lg transition-transform group-hover:scale-110 group-hover:rotate-3`}>
-                <Icon className="h-5 w-5" />
-            </div>
-            <span className="text-sm font-bold text-slate-700 dark:text-slate-200 whitespace-nowrap">{title}</span>
-        </button>
-    );
-}
 
 // --- Activity Hub ---
 function ActivityHub({ stats }: { stats: { points: number, reports: number, resolved: number } }) {
@@ -309,34 +287,13 @@ export function CommunityDashboard() {
                     <ImpactPanel profile={profile} />
                 </div>
 
-                {/* ===== 5. QUICK ACTIONS ===== */}
-                <div className="anim-fade-up anim-delay-4">
-                    <QuickActions />
-                </div>
-
-                {/* ===== 6. CITY SERVICES ===== */}
+                {/* ===== 5. CIVIC PULSE ===== */}
                 <div className="anim-fade-up anim-delay-5">
-                    <div className="mb-4 flex items-center justify-between px-1">
-                        <h3 className="text-lg font-extrabold text-slate-800 dark:text-slate-100">{t('city.title', 'City Services')}</h3>
-                        <button className="text-xs font-bold text-blue-600 hover:underline flex items-center gap-1" onClick={() => navigate('/services')}>
-                            {t('city.viewAll', 'View All')} <ChevronRight className="w-3.5 h-3.5" />
-                        </button>
-                    </div>
-                    <div className="hide-scrollbar -mx-4 flex gap-3 overflow-x-auto px-4 pb-4">
-                        <ServiceChip icon={Trash2} title={t('city.waste', 'Waste Pick-up')} gradient="gradient-icon-green" onClick={() => navigate('/services/waste')} />
-                        <ServiceChip icon={Car} title={t('city.parking', 'Parking Permit')} gradient="gradient-icon-blue" onClick={() => navigate('/services/parking')} />
-                        <ServiceChip icon={Zap} title={t('city.electricity', 'Electricity')} gradient="gradient-icon-orange" onClick={() => navigate('/services/electricity')} />
-                        <ServiceChip icon={Wifi} title={t('city.wifi', 'Community WiFi')} gradient="gradient-icon-indigo" onClick={() => navigate('/services/wifi')} />
-                    </div>
-                </div>
-
-                {/* ===== 7. CIVIC PULSE ===== */}
-                <div className="anim-fade-up anim-delay-6">
                     <NearbyCivicCarousel />
                 </div>
 
-                {/* ===== 8. ACTIVITY HUB ===== */}
-                <div className="anim-fade-up anim-delay-7">
+                {/* ===== 6. ACTIVITY HUB ===== */}
+                <div className="anim-fade-up anim-delay-6">
                     <ActivityHub stats={{
                         points: profile ? profile.points : 0,
                         reports: profile ? profile.reports_count : 0,
@@ -344,10 +301,9 @@ export function CommunityDashboard() {
                     }} />
                 </div>
 
-                {/* ===== 9. CONTENT GRID (Alerts + Community) ===== */}
-                <div className="anim-fade-up anim-delay-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+                {/* ===== 7. CONTENT GRID (Alerts + Community) ===== */}
+                <div className="anim-fade-up anim-delay-7 grid grid-cols-1 lg:grid-cols-12 gap-8">
                     <div className="lg:col-span-7 space-y-8">
-                        <CityHeatmap />
                         <CityAlertTimeline />
                     </div>
                     <div className="lg:col-span-5 space-y-6">
