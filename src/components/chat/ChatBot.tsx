@@ -1,5 +1,6 @@
 
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import { useChat } from "@/hooks/useChat";
 import { ChatMessage } from "./ChatMessage";
 import { Button } from "@/components/ui/button";
@@ -12,6 +13,31 @@ export const ChatBot = () => {
     const { messages, isLoading, isOpen, toggleChat, sendMessage } = useChat();
     const [inputValue, setInputValue] = React.useState("");
     const scrollRef = useRef<HTMLDivElement>(null);
+
+    // Draggable viewport boundaries
+    const [dragBounds, setDragBounds] = useState({
+        left: -1000,
+        right: 0,
+        top: -800,
+        bottom: 0
+    });
+
+    useEffect(() => {
+        const calculateBounds = () => {
+            const btnSize = 60;
+            const margin = 24;
+            setDragBounds({
+                left: -(window.innerWidth - btnSize - margin),
+                right: 0,
+                top: -(window.innerHeight - btnSize - margin),
+                bottom: 0
+            });
+        };
+
+        calculateBounds();
+        window.addEventListener("resize", calculateBounds);
+        return () => window.removeEventListener("resize", calculateBounds);
+    }, []);
 
     // Auto-scroll to bottom
     useEffect(() => {
@@ -33,18 +59,33 @@ export const ChatBot = () => {
 
     return (
         <>
-            {/* Floating Toggle Button */}
-            <Button
-                onClick={toggleChat}
-                size="icon"
+            {/* Draggable Floating Toggle Button */}
+            <motion.div
+                drag
+                dragMomentum={false}
+                dragElastic={0.08}
+                dragConstraints={dragBounds}
+                whileDrag={{ scale: 1.12, cursor: "grabbing" }}
+                whileHover={{ scale: 1.06 }}
                 className={cn(
-                    "fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg z-50 transition-all duration-300 hover:scale-110",
-                    isOpen ? "rotate-90 scale-0 opacity-0" : "scale-100 opacity-100",
-                    "bg-gradient-to-r from-primary to-blue-600 border-2 border-white/20"
+                    "fixed bottom-6 right-6 z-50 touch-none select-none cursor-grab active:cursor-grabbing",
+                    isOpen ? "pointer-events-none" : "pointer-events-auto"
                 )}
             >
-                <MessageCircle className="h-7 w-7 text-white" />
-            </Button>
+                <button
+                    type="button"
+                    onClick={toggleChat}
+                    title="Quickfix Assistant (Drag anywhere to move)"
+                    aria-label="Toggle Quickfix AI Assistant"
+                    className={cn(
+                        "h-14 w-14 rounded-full shadow-2xl flex items-center justify-center transition-all duration-300 border-2 border-white/30 backdrop-blur-sm",
+                        isOpen ? "rotate-90 scale-0 opacity-0 pointer-events-none" : "scale-100 opacity-100",
+                        "bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-blue-500/30"
+                    )}
+                >
+                    <MessageCircle className="h-7 w-7 text-white pointer-events-none drop-shadow" />
+                </button>
+            </motion.div>
 
             {/* Main Chat Window */}
             <div
