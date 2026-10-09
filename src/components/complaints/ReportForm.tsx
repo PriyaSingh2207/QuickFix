@@ -116,8 +116,8 @@ export function ReportForm({ onSuccess }: { onSuccess?: () => void }) {
                     wardId: 'WARD-04',
                     wardName: 'Ward 4 - Vijay Nagar North',
                     address: data.location,
-                    latitude: coords.lat,
-                    longitude: coords.lng,
+                    latitude: finalCoords.lat,
+                    longitude: finalCoords.lng,
                     photoUrl: imageUrls[0] || undefined
                 });
             } catch (err: any) {
@@ -133,8 +133,8 @@ export function ReportForm({ onSuccess }: { onSuccess?: () => void }) {
                 const offlineReport = {
                     id: crypto.randomUUID(), // Temporary ID
                     ...data,
-                    lat: coords.lat,
-                    lng: coords.lng,
+                    lat: finalCoords.lat,
+                    lng: finalCoords.lng,
                     images: [], // No images for offline
                     created_at: new Date().toISOString(),
                     status: 'pending_sync'
@@ -178,8 +178,8 @@ export function ReportForm({ onSuccess }: { onSuccess?: () => void }) {
             const localReport = {
                 id: crypto.randomUUID(),
                 ...data,
-                lat: coords.lat,
-                lng: coords.lng,
+                lat: finalCoords.lat,
+                lng: finalCoords.lng,
                 images: publicImageUrls.length > 0 ? publicImageUrls : imageUrls,
                 created_at: new Date().toISOString(),
                 status: 'Open'
@@ -201,8 +201,8 @@ export function ReportForm({ onSuccess }: { onSuccess?: () => void }) {
                         description: data.description,
                         category: data.category,
                         location: data.location,
-                        lat: coords.lat,
-                        lng: coords.lng,
+                        lat: finalCoords.lat,
+                        lng: finalCoords.lng,
                         images: publicImageUrls
                     });
                 } catch (remoteError: any) {

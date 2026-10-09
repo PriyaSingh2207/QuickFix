@@ -259,8 +259,15 @@ export function CommunityDashboard() {
                                 </div>
                             </div>
 
-                            <Button variant="ghost" size="icon" className="relative rounded-xl glass-card border-0 hover:bg-white/80 dark:hover:bg-slate-800/80 h-11 w-11">
-                                <span className="absolute right-2.5 top-2 h-2.5 w-2.5 rounded-full bg-red-500 ring-2 ring-white" />
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => navigate('/city-alerts')}
+                                title="View City Broadcasts & Alerts"
+                                aria-label="City Alerts & Announcements"
+                                className="relative rounded-xl glass-card border-0 hover:bg-white/80 dark:hover:bg-slate-800/80 h-11 w-11 cursor-pointer transition-all hover:scale-105 active:scale-95 shadow-sm"
+                            >
+                                <span className="absolute right-2.5 top-2 h-2.5 w-2.5 rounded-full bg-red-500 ring-2 ring-white animate-pulse" />
                                 <Megaphone className="h-5 w-5 text-slate-600 dark:text-slate-400" />
                             </Button>
                         </div>
