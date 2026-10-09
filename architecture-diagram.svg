@@ -1,0 +1,301 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 820" width="100%" height="100%" style="background:#f8fafc; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0284c7"/>
+      <stop offset="50%" stop-color="#0d9488"/>
+      <stop offset="100%" stop-color="#2563eb"/>
+    </linearGradient>
+    <linearGradient id="citizenCard" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f0f9ff"/>
+    </linearGradient>
+    <linearGradient id="officerCard" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f0fdfa"/>
+    </linearGradient>
+    <linearGradient id="contractorCard" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#fffbeb"/>
+    </linearGradient>
+    <linearGradient id="aiCard" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#faf5ff"/>
+    </linearGradient>
+    <linearGradient id="dbCard" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f1f5f9"/>
+    </linearGradient>
+    
+    <!-- Filter for Shadows -->
+    <filter id="cardShadow" x="-5%" y="-5%" width="110%" height="115%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#0f172a" flood-opacity="0.06"/>
+    </filter>
+    <filter id="softShadow" x="-5%" y="-5%" width="110%" height="115%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0f172a" flood-opacity="0.04"/>
+    </filter>
+  </defs>
+
+  <!-- Canvas Border -->
+  <rect x="10" y="10" width="1180" height="800" rx="16" fill="#f8fafc" stroke="#e2e8f0" stroke-width="2"/>
+
+  <!-- TOP TITLE BAR -->
+  <g transform="translate(30, 30)">
+    <rect x="0" y="0" width="44" height="44" rx="10" fill="url(#headerGrad)"/>
+    <!-- Shield Icon in Logo -->
+    <path d="M22 10 L32 14 V24 C32 30 22 35 22 35 C22 35 12 30 12 24 V14 Z" fill="#ffffff" opacity="0.95"/>
+    <text x="56" y="26" font-size="22" font-weight="800" fill="#0f172a" letter-spacing="-0.5">QuickFix <tspan fill="#0d9488" font-weight="600" font-size="16">Platform Architecture</tspan></text>
+    <text x="56" y="42" font-size="12" fill="#64748b" font-weight="500">Urban Intelligence, Contractor Governance &amp; Indic Multilingual Civic Operating System</text>
+    
+    <!-- Badges -->
+    <g transform="translate(780, 8)">
+      <rect x="0" y="0" width="85" height="24" rx="12" fill="#e0f2fe" stroke="#bae6fd"/>
+      <text x="42" y="16" font-size="10.5" font-weight="700" fill="#0369a1" text-anchor="middle">React 18 + Vite</text>
+      
+      <rect x="95" y="0" width="105" height="24" rx="12" fill="#ccfbf1" stroke="#99f6e4"/>
+      <text x="147" y="16" font-size="10.5" font-weight="700" fill="#0f766e" text-anchor="middle">Supabase Postgres</text>
+
+      <rect x="210" y="0" width="85" height="24" rx="12" fill="#fae8ff" stroke="#f5d0fe"/>
+      <text x="252" y="16" font-size="10.5" font-weight="700" fill="#a21caf" text-anchor="middle">Sarvam AI Mayura</text>
+
+      <rect x="305" y="0" width="55" height="24" rx="12" fill="#e2e8f0" stroke="#cbd5e1"/>
+      <text x="332" y="16" font-size="10.5" font-weight="700" fill="#334155" text-anchor="middle">Open311</text>
+    </g>
+  </g>
+
+  <!-- ========================================================================= -->
+  <!-- TIER 1: CLIENT PRESENTATION TIER (Y: 95 - 240) -->
+  <!-- ========================================================================= -->
+  <g transform="translate(30, 95)">
+    <!-- Container Outline -->
+    <rect x="0" y="0" width="1140" height="150" rx="14" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5" filter="url(#softShadow)"/>
+    <rect x="12" y="-10" width="220" height="20" rx="6" fill="#0284c7"/>
+    <text x="20" y="4" font-size="10.5" font-weight="800" fill="#ffffff" letter-spacing="0.5">LAYER 1 • CLIENT PRESENTATION TIER</text>
+
+    <!-- 1.1 Citizen Portal Card -->
+    <g transform="translate(20, 22)">
+      <rect x="0" y="0" width="260" height="110" rx="10" fill="url(#citizenCard)" stroke="#bae6fd" stroke-width="1.5" filter="url(#softShadow)"/>
+      <circle cx="24" cy="24" r="12" fill="#0284c7"/>
+      <text x="24" y="28" font-size="12" fill="#ffffff" text-anchor="middle" font-weight="700">C</text>
+      <text x="44" y="24" font-size="13" font-weight="700" fill="#0369a1">Citizen Portal</text>
+      <text x="44" y="38" font-size="10" fill="#64748b">Route: / &amp; /my-complaints</text>
+      <line x1="12" y1="50" x2="248" y2="50" stroke="#e0f2fe"/>
+      <text x="14" y="66" font-size="10" font-weight="500" fill="#334155">• Multimodal Intake: Voice + GPS Photo</text>
+      <text x="14" y="80" font-size="10" font-weight="500" fill="#334155">• Civic Feed, Upvote Support &amp; Repost</text>
+      <text x="14" y="94" font-size="10" font-weight="500" fill="#334155">• Public SLA Audit Tracking &amp; Karma Tier</text>
+    </g>
+
+    <!-- 1.2 City Officer Portal Card -->
+    <g transform="translate(300, 22)">
+      <rect x="0" y="0" width="260" height="110" rx="10" fill="url(#officerCard)" stroke="#99f6e4" stroke-width="1.5" filter="url(#softShadow)"/>
+      <circle cx="24" cy="24" r="12" fill="#0d9488"/>
+      <text x="24" y="28" font-size="12" fill="#ffffff" text-anchor="middle" font-weight="700">O</text>
+      <text x="44" y="24" font-size="13" font-weight="700" fill="#0f766e">City Officer Command</text>
+      <text x="44" y="38" font-size="10" fill="#64748b">Route: /officer-portal</text>
+      <line x1="12" y1="50" x2="248" y2="50" stroke="#ccfbf1"/>
+      <text x="14" y="66" font-size="10" font-weight="500" fill="#334155">• AI Ranked Incident Queue &amp; Fusion</text>
+      <text x="14" y="80" font-size="10" font-weight="500" fill="#334155">• Spatial Hotspot Heatmap (Leaflet)</text>
+      <text x="14" y="94" font-size="10" font-weight="500" fill="#334155">• Ward Fairness Monitor &amp; Dispatcher</text>
+    </g>
+
+    <!-- 1.3 Contractor & Tenders Portal Card -->
+    <g transform="translate(580, 22)">
+      <rect x="0" y="0" width="260" height="110" rx="10" fill="url(#contractorCard)" stroke="#fde68a" stroke-width="1.5" filter="url(#softShadow)"/>
+      <circle cx="24" cy="24" r="12" fill="#d97706"/>
+      <text x="24" y="28" font-size="12" fill="#ffffff" text-anchor="middle" font-weight="700">K</text>
+      <text x="44" y="24" font-size="13" font-weight="700" fill="#b45309">Contractor &amp; Tenders</text>
+      <text x="44" y="38" font-size="10" fill="#64748b">Route: /contractor-portal</text>
+      <line x1="12" y1="50" x2="248" y2="50" stroke="#fef3c7"/>
+      <text x="14" y="66" font-size="10" font-weight="500" fill="#334155">• GeM/CPPP Tender Marketplace</text>
+      <text x="14" y="80" font-size="10" font-weight="500" fill="#334155">• AI Bid Proposal Gen (Word &amp; PDF)</text>
+      <text x="14" y="94" font-size="10" font-weight="500" fill="#334155">• Work Order Milestone Geo-Inspection</text>
+    </g>
+
+    <!-- 1.4 Emergency Command Center Card -->
+    <g transform="translate(860, 22)">
+      <rect x="0" y="0" width="260" height="110" rx="10" fill="#ffffff" stroke="#fecaca" stroke-width="1.5" filter="url(#softShadow)"/>
+      <circle cx="24" cy="24" r="12" fill="#dc2626"/>
+      <text x="24" y="28" font-size="12" fill="#ffffff" text-anchor="middle" font-weight="700">!</text>
+      <text x="44" y="24" font-size="13" font-weight="700" fill="#b91c1c">Crisis Command Center</text>
+      <text x="44" y="38" font-size="10" fill="#64748b">Route: /emergency</text>
+      <line x1="12" y1="50" x2="248" y2="50" stroke="#fee2e2"/>
+      <text x="14" y="66" font-size="10" font-weight="500" fill="#334155">• Realtime Incident Triage Desk</text>
+      <text x="14" y="80" font-size="10" font-weight="500" fill="#334155">• Multi-Agency Field Crew Broadcasts</text>
+      <text x="14" y="94" font-size="10" font-weight="500" fill="#334155">• Offline PWA Tactical Checklists</text>
+    </g>
+  </g>
+
+  <!-- FLOW ARROWS DOWN (1 -> 2) -->
+  <g stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4,4">
+    <line x1="160" y1="245" x2="160" y2="280"/>
+    <line x1="440" y1="245" x2="440" y2="280"/>
+    <line x1="720" y1="245" x2="720" y2="280"/>
+    <line x1="1000" y1="245" x2="1000" y2="280"/>
+  </g>
+
+  <!-- ========================================================================= -->
+  <!-- TIER 2: INTELLIGENCE, SERVICES & COGNITIVE AI TIER (Y: 280 - 540) -->
+  <!-- ========================================================================= -->
+  <g transform="translate(30, 280)">
+    <rect x="0" y="0" width="1140" height="260" rx="14" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5" filter="url(#softShadow)"/>
+    <rect x="12" y="-10" width="265" height="20" rx="6" fill="#0d9488"/>
+    <text x="20" y="4" font-size="10.5" font-weight="800" fill="#ffffff" letter-spacing="0.5">LAYER 2 • INTELLIGENCE &amp; SERVICE ENGINES</text>
+
+    <!-- 2.1 Universal Indic Multilingual Engine (Sarvam AI) -->
+    <g transform="translate(20, 24)">
+      <rect x="0" y="0" width="260" height="215" rx="10" fill="url(#aiCard)" stroke="#e9d5ff" stroke-width="1.5" filter="url(#softShadow)"/>
+      <rect x="12" y="12" width="236" height="28" rx="6" fill="#7e22ce"/>
+      <text x="130" y="30" font-size="11.5" font-weight="700" fill="#ffffff" text-anchor="middle">Universal Indic Translation Engine</text>
+      
+      <text x="14" y="58" font-size="10.5" font-weight="700" fill="#6b21a8">Sarvam AI Integration (Mayura v1 + Saaras v3)</text>
+      <text x="14" y="74" font-size="9.5" fill="#4b5563">• DOM TreeWalker + MutationObserver auto-translates UI</text>
+      <text x="14" y="88" font-size="9.5" fill="#4b5563">• Batch Delimiter '\n---\n' reduces round-trips by 90%</text>
+      <text x="14" y="102" font-size="9.5" fill="#4b5563">• Strict Brand Protection (Keeps 'Quickfix' intact)</text>
+      <text x="14" y="116" font-size="9.5" fill="#4b5563">• 0ms Multi-Tier Cache: Memory + LocalStorage</text>
+      <text x="14" y="130" font-size="9.5" fill="#4b5563">• Speech-to-Text: Saaras v3 Hindi/Regional voice</text>
+      <line x1="12" y1="140" x2="248" y2="140" stroke="#f3e8ff"/>
+      <text x="14" y="156" font-size="10" font-weight="700" fill="#7e22ce">Supported Languages (10 Indic + EN):</text>
+      <text x="14" y="172" font-size="9.5" fill="#374151">हिन्दी • मराठी • বাংলা • ગુજરાતી • தமிழ் • తెలుగు</text>
+      <text x="14" y="186" font-size="9.5" fill="#374151">ಕನ್ನಡ • മലയാളം • ਪੰਜਾਬੀ • ଓଡ଼ିଆ • English</text>
+      <text x="14" y="202" font-size="9" fill="#9333ea" font-weight="600">Reversible text swap via WeakMap (Zero DOM loss)</text>
+    </g>
+
+    <!-- 2.2 Urban Intelligence Engine -->
+    <g transform="translate(300, 24)">
+      <rect x="0" y="0" width="260" height="215" rx="10" fill="url(#officerCard)" stroke="#99f6e4" stroke-width="1.5" filter="url(#softShadow)"/>
+      <rect x="12" y="12" width="236" height="28" rx="6" fill="#0f766e"/>
+      <text x="130" y="30" font-size="11.5" font-weight="700" fill="#ffffff" text-anchor="middle">Urban Prioritization &amp; Fusion</text>
+
+      <text x="14" y="58" font-size="10.5" font-weight="700" fill="#115e59">Incident Fusion Engine (150m Cluster):</text>
+      <text x="14" y="74" font-size="9.5" fill="#334155">• Spatial-temporal grouping (Haversine &lt; 150m)</text>
+      <text x="14" y="88" font-size="9.5" fill="#334155">• Semantic NLP cosine match threshold tau &gt;= 0.78</text>
+      <text x="14" y="102" font-size="9.5" fill="#334155">• Merges redundant citizen tickets into 1 incident</text>
+      <line x1="12" y1="112" x2="248" y2="112" stroke="#ccfbf1"/>
+      <text x="14" y="128" font-size="10.5" font-weight="700" fill="#115e59">Multi-Factor Priority Matrix:</text>
+      <text x="14" y="144" font-size="9" font-family="monospace" fill="#0f766e">Score = 0.4*U + 0.25*V + 0.2*W + 0.15*D</text>
+      <text x="14" y="158" font-size="9.5" fill="#334155">• U: Category Urgency (High Voltage, Mains)</text>
+      <text x="14" y="172" font-size="9.5" fill="#334155">• V: Vulnerability (Hospitals, Schools, Slums)</text>
+      <text x="14" y="186" font-size="9.5" fill="#334155">• W: Municipal SLA Decay &amp; D: Citizen Upvotes</text>
+      <text x="14" y="202" font-size="9" fill="#0f766e" font-weight="600">Open311 GeoReport v2 Payload Exporter</text>
+    </g>
+
+    <!-- 2.3 Cognitive AI & Generative Bidding Engine -->
+    <g transform="translate(580, 24)">
+      <rect x="0" y="0" width="260" height="215" rx="10" fill="url(#citizenCard)" stroke="#bae6fd" stroke-width="1.5" filter="url(#softShadow)"/>
+      <rect x="12" y="12" width="236" height="28" rx="6" fill="#1d4ed8"/>
+      <text x="130" y="30" font-size="11.5" font-weight="700" fill="#ffffff" text-anchor="middle">Cognitive AI &amp; Proposal Drafter</text>
+
+      <text x="14" y="58" font-size="10.5" font-weight="700" fill="#1e40af">Google Gemini 1.5 Pro Engine:</text>
+      <text x="14" y="74" font-size="9.5" fill="#334155">• NLP Complaint Categorization &amp; Hazard Scoring</text>
+      <text x="14" y="88" font-size="9.5" fill="#334155">• Missing Information &amp; Adaptive Follow-up Gen</text>
+      <text x="14" y="102" font-size="9.5" fill="#334155">• Synthetic Data Pipeline for Stress Simulation</text>
+      <line x1="12" y1="112" x2="248" y2="112" stroke="#e0f2fe"/>
+      <text x="14" y="128" font-size="10.5" font-weight="700" fill="#1e40af">Contractor Bid Proposal Synthesis:</text>
+      <text x="14" y="144" font-size="9.5" fill="#334155">• Generates technical engineering methodologies</text>
+      <text x="14" y="158" font-size="9.5" fill="#334155">• Legal tender clause explainer in plain language</text>
+      <text x="14" y="172" font-size="9.5" fill="#334155">• Milestone scheduling &amp; Gantt timeline builder</text>
+      <text x="14" y="186" font-size="9.5" fill="#334155">• Instant Microsoft Word (.docx) &amp; PDF Export</text>
+      <text x="14" y="202" font-size="9" fill="#1d4ed8" font-weight="600">Zero-hallucination structured prompt schemas</text>
+    </g>
+
+    <!-- 2.4 Procurement, Fairness & Dispatch Engines -->
+    <g transform="translate(860, 24)">
+      <rect x="0" y="0" width="260" height="215" rx="10" fill="url(#contractorCard)" stroke="#fde68a" stroke-width="1.5" filter="url(#softShadow)"/>
+      <rect x="12" y="12" width="236" height="28" rx="6" fill="#b45309"/>
+      <text x="130" y="30" font-size="11.5" font-weight="700" fill="#ffffff" text-anchor="middle">Procurement &amp; Governance</text>
+
+      <text x="14" y="58" font-size="10.5" font-weight="700" fill="#92400e">Government Tender Management:</text>
+      <text x="14" y="74" font-size="9.5" fill="#334155">• GeM / CPPP Notice Publishing &amp; Bidding</text>
+      <text x="14" y="88" font-size="9.5" fill="#334155">• Contractor KYC (GSTIN, MSME, Blacklist Check)</text>
+      <text x="14" y="102" font-size="9.5" fill="#334155">• Work Order Geo-Fenced Milestone Inspection</text>
+      <line x1="12" y1="112" x2="248" y2="112" stroke="#fef3c7"/>
+      <text x="14" y="128" font-size="10.5" font-weight="700" fill="#92400e">Ward Equity &amp; Fairness Monitor:</text>
+      <text x="14" y="144" font-size="9.5" fill="#334155">• Gini Index &amp; Variance tracking across wards</text>
+      <text x="14" y="158" font-size="9.5" fill="#334155">• Alerts on underserved demographic wait-times</text>
+      <text x="14" y="172" font-size="9.5" fill="#334155">• Monsoon / Budget Backlog What-If Simulator</text>
+      <text x="14" y="186" font-size="9.5" fill="#334155">• Auto Crew Skill &amp; Proximity Dispatcher</text>
+      <text x="14" y="202" font-size="9" fill="#b45309" font-weight="600">SLA Violation Penalty &amp; Performance Scoring</text>
+    </g>
+  </g>
+
+  <!-- FLOW ARROWS DOWN (2 -> 3) -->
+  <g stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4,4">
+    <line x1="160" y1="540" x2="160" y2="575"/>
+    <line x1="440" y1="540" x2="440" y2="575"/>
+    <line x1="720" y1="540" x2="720" y2="575"/>
+    <line x1="1000" y1="540" x2="1000" y2="575"/>
+  </g>
+
+  <!-- ========================================================================= -->
+  <!-- TIER 3: PERSISTENCE, SPATIAL & SECURITY INFRASTRUCTURE (Y: 575 - 775) -->
+  <!-- ========================================================================= -->
+  <g transform="translate(30, 575)">
+    <rect x="0" y="0" width="1140" height="200" rx="14" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5" filter="url(#softShadow)"/>
+    <rect x="12" y="-10" width="280" height="20" rx="6" fill="#1e293b"/>
+    <text x="20" y="4" font-size="10.5" font-weight="800" fill="#ffffff" letter-spacing="0.5">LAYER 3 • PERSISTENCE, SPATIAL &amp; SECURITY (SUPABASE)</text>
+
+    <!-- 3.1 PostgreSQL Database -->
+    <g transform="translate(20, 24)">
+      <rect x="0" y="0" width="260" height="155" rx="10" fill="url(#dbCard)" stroke="#cbd5e1" stroke-width="1.5"/>
+      <circle cx="24" cy="24" r="12" fill="#334155"/>
+      <text x="24" y="28" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="700">SQL</text>
+      <text x="44" y="24" font-size="12.5" font-weight="700" fill="#0f172a">PostgreSQL 15 Relational</text>
+      <text x="44" y="38" font-size="9.5" fill="#64748b">Relational Engine with PostGIS</text>
+      <line x1="12" y1="48" x2="248" y2="48" stroke="#e2e8f0"/>
+      <text x="14" y="66" font-size="9.5" fill="#334155">• profiles (RBAC Roles &amp; Citizen Karma)</text>
+      <text x="14" y="82" font-size="9.5" fill="#334155">• complaints (Geo-tagged reports &amp; media)</text>
+      <text x="14" y="98" font-size="9.5" fill="#334155">• incidents (Unified parent clusters)</text>
+      <text x="14" y="114" font-size="9.5" fill="#334155">• tenders, tender_bids &amp; work_orders</text>
+      <text x="14" y="130" font-size="9.5" fill="#334155">• field_teams, notifications &amp; rewards</text>
+      <text x="14" y="146" font-size="9" fill="#0284c7" font-weight="600">GiST Spatial Indices on (lat, lng) coordinates</text>
+    </g>
+
+    <!-- 3.2 Row Level Security (RLS) -->
+    <g transform="translate(300, 24)">
+      <rect x="0" y="0" width="260" height="155" rx="10" fill="url(#dbCard)" stroke="#cbd5e1" stroke-width="1.5"/>
+      <circle cx="24" cy="24" r="12" fill="#0f766e"/>
+      <text x="24" y="28" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="700">RLS</text>
+      <text x="44" y="24" font-size="12.5" font-weight="700" fill="#0f172a">Security &amp; RBAC Policies</text>
+      <text x="44" y="38" font-size="9.5" fill="#64748b">Supabase JWT Claims Enforcement</text>
+      <line x1="12" y1="48" x2="248" y2="48" stroke="#e2e8f0"/>
+      <text x="14" y="66" font-size="9.5" fill="#334155">• Citizen: auth.uid() read/insert own tickets</text>
+      <text x="14" y="82" font-size="9.5" fill="#334155">• Public: read active non-sensitive feeds</text>
+      <text x="14" y="98" font-size="9.5" fill="#334155">• Officer: Elevated triage &amp; dispatch write</text>
+      <text x="14" y="114" font-size="9.5" fill="#334155">• Contractor: Bid write &amp; Milestone audit</text>
+      <text x="14" y="130" font-size="9.5" fill="#334155">• Admin: Full schema &amp; system config</text>
+      <text x="14" y="146" font-size="9" fill="#0d9488" font-weight="600">Strict Cryptographic JWT Authorization</text>
+    </g>
+
+    <!-- 3.3 Supabase Realtime Channels -->
+    <g transform="translate(580, 24)">
+      <rect x="0" y="0" width="260" height="155" rx="10" fill="url(#dbCard)" stroke="#cbd5e1" stroke-width="1.5"/>
+      <circle cx="24" cy="24" r="12" fill="#2563eb"/>
+      <text x="24" y="28" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="700">WS</text>
+      <text x="44" y="24" font-size="12.5" font-weight="700" fill="#0f172a">Supabase Realtime Engine</text>
+      <text x="44" y="38" font-size="9.5" fill="#64748b">WebSocket Broadcast &amp; Postgres CDC</text>
+      <line x1="12" y1="48" x2="248" y2="48" stroke="#e2e8f0"/>
+      <text x="14" y="66" font-size="9.5" fill="#334155">• postgres_changes on 'incidents' table</text>
+      <text x="14" y="82" font-size="9.5" fill="#334155">• Realtime ranked queue position shift push</text>
+      <text x="14" y="98" font-size="9.5" fill="#334155">• Instant notifications to citizen phones</text>
+      <text x="14" y="114" font-size="9.5" fill="#334155">• Live tender award alerts to contractors</text>
+      <text x="14" y="130" font-size="9.5" fill="#334155">• SOS alert propagation (&lt;500ms latency)</text>
+      <text x="14" y="146" font-size="9" fill="#2563eb" font-weight="600">Zero Polling Overhead on Battery &amp; Network</text>
+    </g>
+
+    <!-- 3.4 Supabase Storage & Assets -->
+    <g transform="translate(860, 24)">
+      <rect x="0" y="0" width="260" height="155" rx="10" fill="url(#dbCard)" stroke="#cbd5e1" stroke-width="1.5"/>
+      <circle cx="24" cy="24" r="12" fill="#ea580c"/>
+      <text x="24" y="28" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="700">S3</text>
+      <text x="44" y="24" font-size="12.5" font-weight="700" fill="#0f172a">Storage &amp; Static Assets</text>
+      <text x="44" y="38" font-size="9.5" fill="#64748b">Encrypted Cloud Storage Buckets</text>
+      <line x1="12" y1="48" x2="248" y2="48" stroke="#e2e8f0"/>
+      <text x="14" y="66" font-size="9.5" fill="#334155">• Bucket: complaint-media (Geotagged photos)</text>
+      <text x="14" y="82" font-size="9.5" fill="#334155">• Bucket: contractor-docs (KYC &amp; Licences)</text>
+      <text x="14" y="98" font-size="9.5" fill="#334155">• Bucket: completion-proof (Inspection audits)</text>
+      <text x="14" y="114" font-size="9.5" fill="#334155">• Workbox Offline Cache (PWA Service Worker)</text>
+      <text x="14" y="130" font-size="9.5" fill="#334155">• Content-Delivery-Network (CDN) Edge caching</text>
+      <text x="14" y="146" font-size="9" fill="#ea580c" font-weight="600">SHA-256 Tamper Verification on Proof Images</text>
+    </g>
+  </g>
+</svg>

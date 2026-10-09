@@ -17,6 +17,52 @@
 
 ## 2. High-Level System Architecture
 
+### 2.1. Visual System Architecture Diagram
+
+![QuickFix System Architecture Diagram](./architecture-diagram.svg)
+
+---
+
+### 2.2. Architectural Tier Diagram (Structural Layout)
+
+```text
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│                        LAYER 1: CLIENT PRESENTATION (REACT 18 + VITE)                  │
+├────────────────────┬────────────────────┬───────────────────────┬──────────────────────┤
+│   CITIZEN PORTAL   │ CITY OFFICER DESK  │ CONTRACTOR & TENDERS  │   CRISIS COMMAND     │
+│  (/, /my-complaints)│  (/officer-portal) │  (/contractor-portal) │     (/emergency)     │
+│ • Voice + GPS Photo│ • Ranked Queue     │ • GeM/CPPP Tenders    │ • Realtime Triage    │
+│ • Civic Feed + Vote│ • Spatial Heatmap  │ • AI Bid Proposal Gen │ • Multi-Agency Radio │
+│ • Public Audit SLA │ • Ward Equity Gini │ • Milestone Geo-Audit │ • Offline PWA Ops    │
+└─────────┬──────────┴─────────┬──────────┴───────────┬───────────┴──────────┬───────────┘
+          │                    │                      │                      │
+          ▼                    ▼                      ▼                      ▼
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│               LAYER 2: SERVICE ENGINES & COGNITIVE AI ORCHESTRATION                    │
+├────────────────────┬────────────────────┬───────────────────────┬──────────────────────┤
+│ UNIVERSAL INDIC AI │ URBAN INTELLIGENCE │ COGNITIVE AI ENGINES  │ TENDERS & GOVERNANCE │
+│   (SARVAM AI API)  │   (FUSION MATRIX)  │ (GOOGLE GEMINI 1.5)   │   (MUNICIPAL SLA)    │
+│ • Mayura v1 (Trans)│ • 150m Cluster Hub │ • NLP Categorization  │ • Tender Publishing  │
+│ • Saaras v3 (Voice)│ • 4-Factor Matrix  │ • AI Bidding Gen      │ • Contractor KYC     │
+│ • DOM TreeWalker   │ • Gini Fair Index  │ • Legal Clause Reader │ • Milestone Evidence │
+│ • 10 Indic Langs   │ • What-If Sim      │ • Word/PDF Exporter   │ • SLA Penalty Engine │
+└─────────┬──────────┴─────────┬──────────┴───────────┬───────────┴──────────┬───────────┘
+          │                    │                      │                      │
+          ▼                    ▼                      ▼                      ▼
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│                 LAYER 3: PERSISTENCE, SPATIAL & SECURITY (SUPABASE)                    │
+├────────────────────┬────────────────────┬───────────────────────┬──────────────────────┤
+│   POSTGRESQL 15    │ ROW-LEVEL SECURITY │   REALTIME WEBSOCKET  │ STORAGE & ASSETS     │
+│ • PostGIS Spatial  │ • Strict RBAC      │ • CDC Push on Incidents│ • Geo-tagged Media  │
+│ • Relational Model │ • JWT Claims Check │ • Live Queue Sync     │ • Contractor Docs    │
+│ • GiST Geo-Indices │ • Zero Trust Model │ • SOS Alert Broadcast │ • Workbox PWA Cache  │
+└────────────────────┴────────────────────┴───────────────────────┴──────────────────────┘
+```
+
+---
+
+### 2.3. Interactive Sequence Flow (Mermaid Graph)
+
 ```mermaid
 flowchart TB
     subgraph ClientLayer["Frontend Application Layer (React 18 + Vite + Tailwind CSS)"]
