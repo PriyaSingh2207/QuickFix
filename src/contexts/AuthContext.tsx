@@ -2,17 +2,22 @@ import { createContext, useContext, useEffect, useState, useRef } from "react";
 import { supabase } from "@/lib/supabase";
 import { db } from "@/lib/db";
 
+export type UserRole = "citizen" | "officer" | "contractor" | "volunteer" | "admin";
+
 export interface Profile {
   id: string;
   name: string;
   email: string;
   phone?: string;
-  role: "citizen" | "volunteer" | "admin";
+  role: UserRole;
   city: string;
   status: string;
   points: number;
   reports_count: number;
   resolved_count: number;
+  department?: string;
+  designation?: string;
+  vendor_id?: string;
   area_id?: string;
   language?: string;
   notification_preferences?: any;
@@ -33,7 +38,7 @@ interface AuthContextType {
   refreshProfile: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
   updatePassword: (password: string) => Promise<void>;
-  loginAsDemo: (role?: "citizen" | "volunteer" | "admin") => void;
+  loginAsDemo: (role?: UserRole) => void;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -59,29 +64,92 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // Promise cache to deduplicate simultaneous profile fetches
   const fetchPromiseRef = useRef<Promise<Profile> | null>(null);
 
-  const loginAsDemo = (role: "citizen" | "volunteer" | "admin" = "citizen") => {
-    const demoUser = {
-      id: "demo-citizen-indore",
-      email: "citizen.demo@quickfix.gov",
-      user_metadata: {
-        full_name: "Priya Sharma",
+  const loginAsDemo = (role: UserRole = "citizen") => {
+    let demoUser: any;
+    let demoProfile: Profile;
+
+    if (role === "officer") {
+      demoUser = {
+        id: "demo-officer-imc",
+        email: "officer.verma@imc.gov.in",
+        user_metadata: {
+          full_name: "Er. Rajesh Verma",
+          role: "officer",
+          designation: "Zonal Municipal Commissioner (Zone 4)",
+          department: "Urban Intelligence & Field Operations",
+          city: "Indore"
+        }
+      };
+      demoProfile = {
+        id: "demo-officer-imc",
+        name: "Er. Rajesh Verma",
+        email: "officer.verma@imc.gov.in",
+        role: "officer",
+        city: "Indore",
+        department: "Urban Intelligence & Field Operations",
+        designation: "Zonal Municipal Commissioner",
+        status: "active",
+        points: 850,
+        reports_count: 54,
+        resolved_count: 48,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
+    } else if (role === "contractor") {
+      demoUser = {
+        id: "demo-contractor-gem",
+        email: "contractor.infra@gem.gov.in",
+        user_metadata: {
+          full_name: "Vikramaditya Infra Projects",
+          role: "contractor",
+          vendor_id: "GEM-MP-2024-8891",
+          designation: "Class-A Certified Municipal Contractor",
+          city: "Indore"
+        }
+      };
+      demoProfile = {
+        id: "demo-contractor-gem",
+        name: "Vikramaditya Infra (Class-A Contractor)",
+        email: "contractor.infra@gem.gov.in",
+        role: "contractor",
+        vendor_id: "GEM-MP-2024-8891",
+        designation: "Class-A Certified Municipal Contractor",
+        city: "Indore",
+        status: "active",
+        points: 620,
+        reports_count: 22,
+        resolved_count: 19,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
+    } else {
+      // Citizen default
+      demoUser = {
+        id: "demo-citizen-indore",
+        email: "citizen.demo@quickfix.gov",
+        user_metadata: {
+          full_name: "Priya Sharma",
+          role: role,
+          designation: "Active Resident (Ward 4)",
+          city: "Indore"
+        }
+      };
+      demoProfile = {
+        id: "demo-citizen-indore",
+        name: "Priya Sharma",
+        email: "citizen.demo@quickfix.gov",
         role: role,
-        city: "Indore"
-      }
-    };
-    const demoProfile: Profile = {
-      id: "demo-citizen-indore",
-      name: "Priya Sharma",
-      email: "citizen.demo@quickfix.gov",
-      role: role,
-      city: "Indore",
-      status: "active",
-      points: 240,
-      reports_count: 5,
-      resolved_count: 3,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    };
+        designation: "Active Resident (Ward 4)",
+        city: "Indore",
+        status: "active",
+        points: 240,
+        reports_count: 5,
+        resolved_count: 3,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
+    }
+
     setUser(demoUser);
     setProfile(demoProfile);
     setLoading(false);
@@ -145,8 +213,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       id: userData.id,
       name: userData.user_metadata?.full_name || userData.email?.split('@')[0] || 'Citizen',
       email: userData.email || '',
-      role: userData.user_metadata?.role || 'citizen',
+      role: (userData.user_metadata?.role as UserRole) || 'citizen',
       city: userData.user_metadata?.city || 'Indore',
+      department: userData.user_metadata?.department,
+      designation: userData.user_metadata?.designation,
+      vendor_id: userData.user_metadata?.vendor_id,
       status: 'active',
       points: 0,
       reports_count: 0,

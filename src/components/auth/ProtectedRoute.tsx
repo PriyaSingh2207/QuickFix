@@ -1,9 +1,9 @@
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth, type UserRole } from "@/contexts/AuthContext";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 
 interface ProtectedRouteProps {
-  allowedRoles?: ("citizen" | "volunteer" | "admin")[];
+  allowedRoles?: UserRole[];
 }
 
 export function ProtectedRoute({ allowedRoles }: ProtectedRouteProps) {
