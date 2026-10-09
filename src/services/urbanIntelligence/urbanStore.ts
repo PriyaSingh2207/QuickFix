@@ -93,15 +93,20 @@ export function validateCitizenComplaint(data: {
     missing.push('Ward administrative jurisdiction');
   }
 
-  if (
-    data.latitude === null ||
-    data.longitude === null ||
-    isNaN(data.latitude) ||
-    isNaN(data.longitude) ||
-    data.latitude === 0 ||
-    data.longitude === 0
-  ) {
-    missing.push('GPS Geolocation coordinates (Latitude/Longitude required)');
+  // Check if valid GPS coordinates or manual location with address & ward is provided
+  const hasValidCoordinates = (
+    data.latitude !== null &&
+    data.longitude !== null &&
+    !isNaN(data.latitude) &&
+    !isNaN(data.longitude) &&
+    data.latitude !== 0 &&
+    data.longitude !== 0
+  );
+
+  const hasManualLocation = Boolean(data.address && data.address.trim().length >= 3 && data.wardId);
+
+  if (!hasValidCoordinates && !hasManualLocation) {
+    missing.push('Location verification (GPS coordinates or manual address with ward)');
   }
 
   if (missing.length > 0) {
@@ -114,6 +119,15 @@ export function validateCitizenComplaint(data: {
 
   return { isValid: true, missingFields: [] };
 }
+
+export const WARD_FALLBACK_COORDINATES: Record<string, { lat: number; lng: number; name: string }> = {
+  'WARD-04': { lat: 22.7540, lng: 75.8912, name: 'Ward 4 - Vijay Nagar North' },
+  'WARD-09': { lat: 22.7196, lng: 75.8577, name: 'Ward 9 - Rajwada Central' },
+  'WARD-12': { lat: 22.7610, lng: 75.8750, name: 'Ward 12 - Sukhlia Industrial' },
+  'WARD-17': { lat: 22.7160, lng: 75.8710, name: 'Ward 17 - Chhoti Gwaltoli' },
+  'WARD-23': { lat: 22.7480, lng: 75.8450, name: 'Ward 23 - Banganga Colony' },
+  'WARD-28': { lat: 22.6950, lng: 75.8320, name: 'Ward 28 - Annapurna Hills' }
+};
 
 export interface RegisterComplaintOutput {
   complaint: Complaint;
@@ -139,8 +153,17 @@ export function processCitizenComplaint(data: {
   longitude: number;
   photoUrl?: string;
 }): RegisterComplaintOutput {
+  // If coordinates are missing from manual location entry, resolve from ward coordinates
+  let finalLat = data.latitude;
+  let finalLng = data.longitude;
+  if (!finalLat || !finalLng || isNaN(finalLat) || isNaN(finalLng) || finalLat === 0 || finalLng === 0) {
+    const fallback = WARD_FALLBACK_COORDINATES[data.wardId] || { lat: 22.7540, lng: 75.8912 };
+    finalLat = fallback.lat;
+    finalLng = fallback.lng;
+  }
+
   // 1. Validation check
-  const validation = validateCitizenComplaint(data);
+  const validation = validateCitizenComplaint({ ...data, latitude: finalLat, longitude: finalLng });
   if (!validation.isValid) {
     throw new Error(validation.errorMessage);
   }
@@ -166,8 +189,8 @@ export function processCitizenComplaint(data: {
     subcategory: data.subcategory || `${data.category} Issue`,
     wardId: data.wardId,
     wardName: data.wardName,
-    latitude: data.latitude,
-    longitude: data.longitude,
+    latitude: finalLat,
+    longitude: finalLng,
     address: data.address,
     photoUrl: data.photoUrl,
     timestamp: new Date().toISOString(),

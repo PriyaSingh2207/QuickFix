@@ -94,11 +94,17 @@ export function ReportForm({ onSuccess }: { onSuccess?: () => void }) {
         try {
             setIsSubmitting(true);
 
-            // Mandatory GPS location verification gate
-            if (!coords || !coords.lat || !coords.lng) {
-                toast.error("Registration Blocked: GPS Location verification is mandatory to submit a complaint.");
-                setIsSubmitting(false);
-                return;
+            // Location verification gate (GPS or Manual address)
+            let finalCoords = coords;
+            if (!finalCoords || !finalCoords.lat || !finalCoords.lng) {
+                if (data.location && data.location.trim().length >= 3) {
+                    finalCoords = { lat: 22.7540, lng: 75.8912 };
+                    setCoords(finalCoords);
+                } else {
+                    toast.error("Location Required: Please provide an address or auto-detect GPS location.");
+                    setIsSubmitting(false);
+                    return;
+                }
             }
 
             // Always process through Urban Intelligence AI engine to fuse or create ranked incident

@@ -32,14 +32,16 @@ import { SmartCitizenComplaintModal } from "@/components/complaints/SmartCitizen
 import {
     processCitizenComplaint,
     validateCitizenComplaint,
-    getStoredIncidents
+    getStoredIncidents,
+    WARD_FALLBACK_COORDINATES
 } from "@/services/urbanIntelligence/urbanStore";
 import type { RegisterComplaintOutput } from "@/services/urbanIntelligence/urbanStore";
 import { evaluateComplaintFusion } from "@/services/urbanIntelligence/incidentFusion";
 import type { Complaint } from "@/types/urbanIntelligence";
 import {
     getHighPrecisionCoordinates,
-    reverseGeocodeCoordinates
+    reverseGeocodeCoordinates,
+    searchAddressLocations
 } from "@/services/location/preciseGeolocation";
 
 const categories = [
@@ -66,6 +68,9 @@ export function QuickComplaint() {
     const [gpsAccuracy, setGpsAccuracy] = useState<number | null>(null);
     const [citizenName, setCitizenName] = useState("");
     const [phone, setPhone] = useState("");
+    const [locationMode, setLocationMode] = useState<'auto' | 'manual'>('auto');
+    const [searchResults, setSearchResults] = useState<Array<{ address: string; latitude: number; longitude: number }>>([]);
+    const [isSearching, setIsSearching] = useState(false);
     const [isLocating, setIsLocating] = useState(false);
     const [locationStatus, setLocationStatus] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -182,14 +187,62 @@ export function QuickComplaint() {
         }
     };
 
-    const handleCategoryClick = (catId: string) => {
-        setCategory(catId);
-        setIsModalOpen(true);
+    const handleManualAddressChange = async (val: string) => {
+        setAddress(val);
+        if (!latitude || !longitude) {
+            const wardCoord = WARD_FALLBACK_COORDINATES[wardId] || WARD_FALLBACK_COORDINATES['WARD-04'];
+            setLatitude(wardCoord.lat);
+            setLongitude(wardCoord.lng);
+            setGpsAccuracy(20);
+        }
+        if (val.trim().length >= 3) {
+            setIsSearching(true);
+            try {
+                const results = await searchAddressLocations(val);
+                setSearchResults(results);
+            } catch (err) {
+                console.warn('Search locations failed:', err);
+            } finally {
+                setIsSearching(false);
+            }
+        } else {
+            setSearchResults([]);
+        }
+    };
+
+    const handleSelectSearchResult = (result: { address: string; latitude: number; longitude: number }) => {
+        setAddress(result.address);
+        setLatitude(result.latitude);
+        setLongitude(result.longitude);
+        setGpsAccuracy(5);
+        setSearchResults([]);
+    };
+
+    const handleWardChange = (newWardId: string, newWardName: string) => {
+        setWardId(newWardId);
+        setWardName(newWardName);
+        if (locationMode === 'manual' || !latitude) {
+            const wardCoord = WARD_FALLBACK_COORDINATES[newWardId] || WARD_FALLBACK_COORDINATES['WARD-04'];
+            setLatitude(wardCoord.lat);
+            setLongitude(wardCoord.lng);
+            setGpsAccuracy(20);
+        }
     };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (!validation.isValid || latitude === null || longitude === null) return;
+        
+        let finalLat = latitude;
+        let finalLng = longitude;
+        if (!finalLat || !finalLng) {
+            const wardCoord = WARD_FALLBACK_COORDINATES[wardId] || WARD_FALLBACK_COORDINATES['WARD-04'];
+            finalLat = wardCoord.lat;
+            finalLng = wardCoord.lng;
+            setLatitude(finalLat);
+            setLongitude(finalLng);
+        }
+
+        if (!validation.isValid && (!address || address.trim().length < 3)) return;
 
         setIsSubmitting(true);
         try {
@@ -201,8 +254,8 @@ export function QuickComplaint() {
                 wardId,
                 wardName,
                 address,
-                latitude,
-                longitude
+                latitude: finalLat,
+                longitude: finalLng
             });
             setSubmissionResult(result);
         } catch (err: any) {
@@ -447,88 +500,197 @@ export function QuickComplaint() {
                                 />
                             </div>
 
-                            {/* MANDATORY LOCATION SECTION */}
+                            {/* LOCATION VERIFICATION SECTION (GPS OR MANUAL ENTRY) */}
                             <div className="bg-slate-50/80 dark:bg-slate-900/60 border rounded-xl p-3.5 space-y-2.5">
-                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-1.5 border-b border-border/60">
                                     <div className="flex items-center gap-1.5">
                                         <MapPin className="h-4 w-4 text-red-500" />
-                                        <span className="text-xs font-bold text-foreground">3. Location Verification (Mandatory)</span>
-                                        {gpsAccuracy !== null && (
+                                        <span className="text-xs font-bold text-foreground">3. Location Verification</span>
+                                        {latitude && longitude && (
                                             <Badge variant="outline" className="text-[10px] text-teal-700 dark:text-teal-300 border-teal-500/40 bg-teal-50/60">
-                                                ±{gpsAccuracy}m GPS Precision
+                                                {locationMode === 'auto' ? (gpsAccuracy ? `±${gpsAccuracy}m GPS` : 'GPS Verified') : 'Manual Address'}
                                             </Badge>
                                         )}
                                     </div>
 
-                                    <Button
-                                        type="button"
-                                        size="sm"
-                                        variant="outline"
-                                        onClick={handleDetectGPS}
-                                        disabled={isLocating}
-                                        className="h-7 text-xs px-2.5 font-bold border-teal-500/50 text-teal-700 dark:text-teal-300 hover:bg-teal-50 shadow-sm"
-                                    >
-                                        {isLocating ? (
-                                            <Loader2 className="h-3 w-3 mr-1 animate-spin text-teal-600" />
-                                        ) : (
-                                            <Crosshair className="h-3 w-3 mr-1 text-teal-600" />
-                                        )}
-                                        {latitude ? "Refresh High-Precision GPS" : "Auto-Detect Live GPS"}
-                                    </Button>
+                                    {/* Mode Selector Toggle */}
+                                    <div className="flex items-center gap-1 bg-muted/60 p-0.5 rounded-lg border border-border/40">
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setLocationMode('auto');
+                                                if (!latitude) handleDetectGPS();
+                                            }}
+                                            className={`px-2.5 py-1 text-xs rounded-md font-semibold transition-all flex items-center gap-1 ${
+                                                locationMode === 'auto'
+                                                    ? "bg-background text-teal-700 dark:text-teal-300 shadow-sm border border-border/50"
+                                                    : "text-muted-foreground hover:text-foreground"
+                                            }`}
+                                        >
+                                            <Crosshair className="h-3 w-3" />
+                                            <span>Live GPS (Auto)</span>
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setLocationMode('manual');
+                                                if (!latitude) {
+                                                    const wardCoord = WARD_FALLBACK_COORDINATES[wardId] || WARD_FALLBACK_COORDINATES['WARD-04'];
+                                                    setLatitude(wardCoord.lat);
+                                                    setLongitude(wardCoord.lng);
+                                                    setGpsAccuracy(20);
+                                                }
+                                            }}
+                                            className={`px-2.5 py-1 text-xs rounded-md font-semibold transition-all flex items-center gap-1 ${
+                                                locationMode === 'manual'
+                                                    ? "bg-background text-teal-700 dark:text-teal-300 shadow-sm border border-border/50"
+                                                    : "text-muted-foreground hover:text-foreground"
+                                            }`}
+                                        >
+                                            <span>✍️ Write Manually</span>
+                                        </button>
+                                    </div>
                                 </div>
 
-                                {locationStatus && (
-                                    <div className="text-[11px] text-teal-800 dark:text-teal-300 bg-teal-50 dark:bg-teal-950/40 p-2 rounded-lg border border-teal-200 dark:border-teal-800 flex items-center gap-1.5">
-                                        <Loader2 className="h-3 w-3 animate-spin shrink-0" />
-                                        <span>{locationStatus}</span>
+                                {/* AUTO GPS CONTROLS */}
+                                {locationMode === 'auto' ? (
+                                    <div className="space-y-2">
+                                        <div className="flex items-center justify-between gap-2">
+                                            <span className="text-[11px] text-muted-foreground">
+                                                Acquiring hardware GPS coordinates from your device:
+                                            </span>
+                                            <Button
+                                                type="button"
+                                                size="sm"
+                                                variant="outline"
+                                                onClick={handleDetectGPS}
+                                                disabled={isLocating}
+                                                className="h-7 text-xs px-2.5 font-bold border-teal-500/50 text-teal-700 dark:text-teal-300 hover:bg-teal-50 shadow-sm"
+                                            >
+                                                {isLocating ? (
+                                                    <Loader2 className="h-3 w-3 mr-1 animate-spin text-teal-600" />
+                                                ) : (
+                                                    <Crosshair className="h-3 w-3 mr-1 text-teal-600" />
+                                                )}
+                                                {latitude ? "Refresh High-Precision GPS" : "Auto-Detect Live GPS"}
+                                            </Button>
+                                        </div>
+
+                                        {locationStatus && (
+                                            <div className="text-[11px] text-teal-800 dark:text-teal-300 bg-teal-50 dark:bg-teal-950/40 p-2 rounded-lg border border-teal-200 dark:border-teal-800 flex items-center gap-1.5">
+                                                <Loader2 className="h-3 w-3 animate-spin shrink-0" />
+                                                <span>{locationStatus}</span>
+                                            </div>
+                                        )}
+
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
+                                            <div>
+                                                <label className="text-[11px] text-muted-foreground block mb-1">Ward Jurisdiction:</label>
+                                                <select
+                                                    value={wardId}
+                                                    onChange={(e) => handleWardChange(e.target.value, e.target.options[e.target.selectedIndex].text)}
+                                                    className="w-full h-8 px-2 rounded border bg-background text-xs"
+                                                    required
+                                                >
+                                                    <option value="WARD-04">Ward 4 - Vijay Nagar North</option>
+                                                    <option value="WARD-09">Ward 9 - Rajwada Central</option>
+                                                    <option value="WARD-12">Ward 12 - Sukhlia Industrial</option>
+                                                    <option value="WARD-17">Ward 17 - Chhoti Gwaltoli</option>
+                                                    <option value="WARD-23">Ward 23 - Banganga Colony</option>
+                                                    <option value="WARD-28">Ward 28 - Annapurna Hills</option>
+                                                </select>
+                                            </div>
+
+                                            <div>
+                                                <label className="text-[11px] text-muted-foreground block mb-1">Street Address / Landmark (Auto-Resolved):</label>
+                                                <Input
+                                                    placeholder="e.g. Near Community Center, Gate 2"
+                                                    value={address}
+                                                    onChange={(e) => handleManualAddressChange(e.target.value)}
+                                                    className="h-8 text-xs"
+                                                    required
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    /* MANUAL LOCATION ENTRY */
+                                    <div className="space-y-2.5">
+                                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+                                            <div>
+                                                <label className="text-[11px] text-muted-foreground font-semibold block mb-1">Ward / Zone Area:</label>
+                                                <select
+                                                    value={wardId}
+                                                    onChange={(e) => handleWardChange(e.target.value, e.target.options[e.target.selectedIndex].text)}
+                                                    className="w-full h-8 px-2 rounded border bg-background text-xs"
+                                                    required
+                                                >
+                                                    <option value="WARD-04">Ward 4 - Vijay Nagar North</option>
+                                                    <option value="WARD-09">Ward 9 - Rajwada Central</option>
+                                                    <option value="WARD-12">Ward 12 - Sukhlia Industrial</option>
+                                                    <option value="WARD-17">Ward 17 - Chhoti Gwaltoli</option>
+                                                    <option value="WARD-23">Ward 23 - Banganga Colony</option>
+                                                    <option value="WARD-28">Ward 28 - Annapurna Hills</option>
+                                                </select>
+                                            </div>
+
+                                            <div className="sm:col-span-2 relative">
+                                                <label className="text-[11px] text-muted-foreground font-semibold block mb-1">
+                                                    Write Street Address / Landmark Manually:
+                                                </label>
+                                                <div className="relative">
+                                                    <Input
+                                                        placeholder="e.g. Near Shiv Mandir, Gate 2, Main Market, AB Road"
+                                                        value={address}
+                                                        onChange={(e) => handleManualAddressChange(e.target.value)}
+                                                        className="h-8 text-xs pr-7"
+                                                        required
+                                                    />
+                                                    {isSearching ? (
+                                                        <Loader2 className="h-3.5 w-3.5 text-teal-600 animate-spin absolute right-2 top-2.5" />
+                                                    ) : null}
+                                                </div>
+
+                                                {/* Autocomplete Suggestions */}
+                                                {searchResults.length > 0 && (
+                                                    <div className="absolute z-20 left-0 right-0 mt-1 bg-popover border rounded-lg shadow-lg overflow-hidden text-xs max-h-36 overflow-y-auto">
+                                                        <div className="p-1 text-[10px] font-bold text-muted-foreground uppercase border-b bg-muted/40">
+                                                            Matching Landmarks (Click to link):
+                                                        </div>
+                                                        {searchResults.map((res, i) => (
+                                                            <button
+                                                                key={i}
+                                                                type="button"
+                                                                onClick={() => handleSelectSearchResult(res)}
+                                                                className="w-full text-left p-1.5 hover:bg-muted text-foreground text-xs flex items-start gap-1 border-b last:border-b-0"
+                                                            >
+                                                                <MapPin className="h-3 w-3 text-red-500 shrink-0 mt-0.5" />
+                                                                <span className="line-clamp-1">{res.address}</span>
+                                                            </button>
+                                                        ))}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
                                     </div>
                                 )}
 
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
-                                    <div>
-                                        <label className="text-[11px] text-muted-foreground block mb-1">Ward Jurisdiction:</label>
-                                        <select
-                                            value={wardId}
-                                            onChange={(e) => {
-                                                setWardId(e.target.value);
-                                                setWardName(e.target.options[e.target.selectedIndex].text);
-                                            }}
-                                            className="w-full h-8 px-2 rounded border bg-background text-xs"
-                                            required
-                                        >
-                                            <option value="WARD-04">Ward 4 - Vijay Nagar North</option>
-                                            <option value="WARD-09">Ward 9 - Rajwada Central</option>
-                                            <option value="WARD-12">Ward 12 - Sukhlia Industrial</option>
-                                            <option value="WARD-17">Ward 17 - Chhoti Gwaltoli</option>
-                                            <option value="WARD-23">Ward 23 - Banganga Colony</option>
-                                            <option value="WARD-28">Ward 28 - Annapurna Hills</option>
-                                        </select>
-                                    </div>
-
-                                    <div>
-                                        <label className="text-[11px] text-muted-foreground block mb-1">Street Address / Landmark (Auto-Resolved):</label>
-                                        <Input
-                                            placeholder="e.g. Near Community Center, Gate 2"
-                                            value={address}
-                                            onChange={(e) => setAddress(e.target.value)}
-                                            className="h-8 text-xs"
-                                            required
-                                        />
-                                    </div>
-                                </div>
-
-                                {/* GPS Status Display */}
+                                {/* Location Status Display */}
                                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[11px] pt-1 border-t border-slate-200 dark:border-slate-800">
-                                    <span className="text-muted-foreground font-medium">GPS Verification Status:</span>
-                                    {latitude && longitude ? (
+                                    <span className="text-muted-foreground font-medium">Location Status:</span>
+                                    {address && address.trim().length >= 3 ? (
                                         <span className="font-mono text-green-600 dark:text-green-400 font-semibold flex items-center gap-1">
                                             <CheckCircle2 className="h-3 w-3" />
-                                            Verified: {latitude}, {longitude} {gpsAccuracy ? `(±${gpsAccuracy}m)` : ""}
+                                            {locationMode === 'auto'
+                                                ? `GPS Verified: ${latitude?.toFixed(4)}, ${longitude?.toFixed(4)}`
+                                                : `Manual Location Confirmed: ${wardName.split(' - ')[0]}`}
                                         </span>
                                     ) : (
-                                        <span className="text-red-500 font-semibold flex items-center gap-1">
+                                        <span className="text-amber-600 dark:text-amber-400 font-semibold flex items-center gap-1">
                                             <AlertTriangle className="h-3 w-3" />
-                                            GPS Required: Click "Auto-Detect Live GPS" to enable registration
+                                            {locationMode === 'auto'
+                                                ? 'Click "Auto-Detect Live GPS" or switch to "Write Manually"'
+                                                : 'Write your street address or landmark to proceed'}
                                         </span>
                                     )}
                                 </div>
@@ -595,7 +757,7 @@ export function QuickComplaint() {
                                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 text-[11px]">
                                     <div className={`flex items-center gap-1 ${latitude && longitude ? "text-green-600 font-medium" : "text-red-500 font-semibold"}`}>
                                         {latitude && longitude ? <CheckCircle2 className="h-3 w-3" /> : <AlertTriangle className="h-3 w-3" />}
-                                        GPS: {latitude && longitude ? "Verified" : "Missing"}
+                                        Location: {latitude && longitude ? (locationMode === 'auto' ? "GPS Locked" : "Manual Linked") : "Missing"}
                                     </div>
                                     <div className={`flex items-center gap-1 ${address.trim().length >= 3 ? "text-green-600 font-medium" : "text-red-500 font-semibold"}`}>
                                         {address.trim().length >= 3 ? <CheckCircle2 className="h-3 w-3" /> : <AlertTriangle className="h-3 w-3" />}
@@ -615,7 +777,7 @@ export function QuickComplaint() {
                                     <div className="pt-1.5 border-t border-border">
                                         <p className="text-[11px] text-red-600 dark:text-red-400 font-medium flex items-center gap-1">
                                             <AlertTriangle className="h-3.5 w-3.5 shrink-0" />
-                                            Registration is locked. You cannot register your complaint without sharing your verified GPS location and problem details.
+                                            Registration is locked. Please provide your problem description and verified location (via GPS or manual address).
                                         </p>
                                     </div>
                                 )}
@@ -641,7 +803,7 @@ export function QuickComplaint() {
                                     )}
                                     {validation.isValid
                                         ? "Submit Complaint & Auto-Group with AI"
-                                        : "Registration Blocked — Provide GPS & Mandatory Info"}
+                                        : "Registration Blocked — Provide Location & Mandatory Info"}
                                 </Button>
                             </div>
                         </form>
