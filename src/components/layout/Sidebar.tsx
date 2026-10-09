@@ -47,7 +47,6 @@ export function Sidebar({ mode, isOpen, activeItem, onItemClick, onClose }: Side
         { id: 'my-complaints', label: t('nav.trackComplaints', 'Track Complaints'), icon: ClipboardList },
         { id: 'missing', label: t('nav.missing', 'Missing Registry'), icon: UserSearch },
         { id: 'events', label: t('nav.events', 'Events'), icon: Calendar },
-        { id: 'preparedness', label: t('nav.preparedness', 'Preparedness'), icon: ShieldCheck },
         { id: 'rewards', label: t('nav.rewards', 'Rewards'), icon: Gift },
         ...(isOfficer ? [{ id: 'officer-portal', label: t('nav.officerPortal', 'Urban Intelligence (Officer)'), icon: ShieldAlert }] : []),
     ];

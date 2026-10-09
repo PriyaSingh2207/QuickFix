@@ -101,7 +101,6 @@ const App = () => (
                   <Route path="/city-alerts" element={<CityAlertsPage />} />
                   <Route path="/join-squad" element={<JoinSquadPage />} />
                   <Route path="/events" element={<Index />} />
-                  <Route path="/preparedness" element={<Index />} />
                   <Route path="/rewards" element={<Index />} />
                   <Route path="/settings" element={<Index />} />
                   <Route path="/missing" element={<Index />} />

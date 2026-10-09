@@ -10,7 +10,6 @@ import { HelplineDirectory } from "@/components/dashboard/HelplineDirectory";
 import RewardsPage from "@/pages/Rewards";
 import { MissingRegistry } from "@/components/dashboard/MissingRegistry";
 import { Events } from "@/pages/Events";
-import Preparedness from "@/pages/Preparedness";
 import Settings from "@/pages/Settings";
 import ProfilePage from "@/pages/Profile";
 import type { AppMode } from "@/types";
@@ -40,7 +39,6 @@ export function Index() {
         if (path === '/events') return 'events';
         if (path === '/missing') return 'missing';
         if (path === '/helpline') return 'helpline';
-        if (path === '/preparedness') return 'preparedness';
         if (path === '/emergency') return 'command';
         if (path === '/') return 'dashboard';
         return 'dashboard';
@@ -117,8 +115,6 @@ export function Index() {
                             <MissingRegistry />
                         ) : activeItem === 'events' ? (
                             <Events />
-                        ) : activeItem === 'preparedness' ? (
-                            <Preparedness />
                         ) : activeItem === 'rewards' ? (
                             <RewardsPage />
                         ) : activeItem === 'settings' ? (
