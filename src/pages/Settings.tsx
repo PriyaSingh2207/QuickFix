@@ -14,7 +14,7 @@ import { LanguageSelector } from "@/components/common/LanguageSelector";
 import { AVATAR_LIST, getAvatarUrl } from "@/lib/avatars";
 
 export default function Settings() {
-    const { profile, user, refreshProfile } = useAuth();
+    const { profile, user, refreshProfile, updateProfile } = useAuth();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
@@ -62,18 +62,17 @@ export default function Settings() {
     };
 
     const handleSaveAccount = async () => {
-        if (!user) return;
+        if (!user && !profile) return;
         setSaving(true);
         try {
-            await db.updateProfile(user.id, {
+            await updateProfile({
                 name: accountData.name,
                 phone: accountData.phone,
-                avatar_url: accountData.avatar_url // Save selected avatar
+                avatar_url: accountData.avatar_url
             });
-            // Force refresh profile context
-            await refreshProfile();
             toast.success("Account updated successfully");
         } catch (error) {
+            console.error("Save account error:", error);
             toast.error("Failed to update account");
         } finally {
             setSaving(false);

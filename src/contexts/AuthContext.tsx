@@ -36,6 +36,7 @@ interface AuthContextType {
   signUp: (email: string, password: string, data?: any) => Promise<void>;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
+  updateProfile: (updates: Partial<Profile>) => Promise<Profile | null>;
   resetPassword: (email: string) => Promise<void>;
   updatePassword: (password: string) => Promise<void>;
   loginAsDemo: (role?: UserRole) => void;
@@ -50,6 +51,7 @@ const AuthContext = createContext<AuthContextType>({
   signUp: async () => { },
   signOut: async () => { },
   refreshProfile: async () => { },
+  updateProfile: async () => null,
   resetPassword: async () => { },
   updatePassword: async () => { },
   loginAsDemo: () => { },
@@ -306,8 +308,58 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const refreshProfile = async () => {
     if (user) {
+      if (user.id?.startsWith('demo-')) {
+        const stored = typeof window !== 'undefined' ? localStorage.getItem('quickfix_demo_user') : null;
+        if (stored) {
+          try {
+            const parsed = JSON.parse(stored);
+            setProfile(parsed.profile);
+          } catch {}
+        }
+        return;
+      }
       await loadProfile(user, true);
     }
+  };
+
+  const updateProfile = async (updates: Partial<Profile>): Promise<Profile | null> => {
+    if (!profile && !user) return null;
+
+    const current = profile || getFallbackProfile(user);
+    const updatedProfile: Profile = {
+      ...current,
+      ...updates,
+      updated_at: new Date().toISOString()
+    };
+
+    // 1. Immediately update in-memory state for instant reactivity
+    setProfile(updatedProfile);
+
+    // 2. Persist in localStorage
+    try {
+      const storedDemo = typeof window !== 'undefined' ? localStorage.getItem('quickfix_demo_user') : null;
+      if (storedDemo) {
+        const parsed = JSON.parse(storedDemo);
+        localStorage.setItem('quickfix_demo_user', JSON.stringify({
+          ...parsed,
+          profile: updatedProfile
+        }));
+      }
+      localStorage.setItem('quickfix_cached_profile', JSON.stringify(updatedProfile));
+    } catch (e) {
+      console.warn('[Auth] localStorage sync error:', e);
+    }
+
+    // 3. Persist to Supabase if not a demo user
+    if (user?.id && !user.id.startsWith('demo-')) {
+      try {
+        await db.updateProfile(user.id, updates);
+      } catch (err) {
+        console.warn('[Auth] Remote profile sync skipped:', err);
+      }
+    }
+
+    return updatedProfile;
   };
 
   const signIn = async (email: string, password: string) => {
@@ -359,7 +411,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, profile, loading, profileError, signIn, signUp, signOut, refreshProfile, resetPassword, updatePassword, loginAsDemo }}>
+    <AuthContext.Provider value={{ user, profile, loading, profileError, signIn, signUp, signOut, refreshProfile, updateProfile, resetPassword, updatePassword, loginAsDemo }}>
       {children}
     </AuthContext.Provider>
   );

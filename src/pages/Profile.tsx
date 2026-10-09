@@ -26,7 +26,7 @@ import { MyRepostsList } from "@/components/profile/MyRepostsList";
 import { AVATAR_LIST, getAvatarUrl } from "@/lib/avatars";
 
 export default function ProfilePage() {
-    const { profile, refreshProfile, loading } = useAuth();
+    const { profile, refreshProfile, updateProfile, loading } = useAuth();
     const [isEditing, setIsEditing] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
     const navigate = useNavigate();
@@ -54,13 +54,12 @@ export default function ProfilePage() {
         if (!profile) return;
         setIsSaving(true);
         try {
-            await db.updateProfile(profile.id, {
+            await updateProfile({
                 name: formData.name,
                 phone: formData.phone,
                 city: formData.city,
                 avatar_url: formData.avatar_url
             });
-            await refreshProfile();
             setIsEditing(false);
             toast.success("Profile updated successfully");
         } catch (error) {
