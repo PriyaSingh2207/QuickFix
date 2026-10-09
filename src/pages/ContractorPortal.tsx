@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   Building2,
   FileText,
@@ -29,7 +29,9 @@ import {
   HelpCircle,
   ChevronRight,
   Info,
-  LogOut
+  LogOut,
+  Camera,
+  X
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -75,7 +77,62 @@ export function ContractorPortal() {
   const [selectedWorkOrder, setSelectedWorkOrder] = useState<WorkOrder | null>(null);
   const [completionSummary, setCompletionSummary] = useState('');
   const [completionPhotoUrl, setCompletionPhotoUrl] = useState('');
+  const [completionFileName, setCompletionFileName] = useState('');
+  const [showUrlInput, setShowUrlInput] = useState(false);
   const [isSubmittingInspection, setIsSubmittingInspection] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleDeviceFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please upload an image file (PNG, JPG, WEBP)');
+      return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error('File size exceeds 10MB limit');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const result = event.target?.result as string;
+      setCompletionPhotoUrl(result);
+      setCompletionFileName(file.name);
+      toast.success(`Photo attached: ${file.name}`);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleDropFile = (e: React.DragEvent) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please drop an image file (PNG, JPG, WEBP)');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const result = event.target?.result as string;
+      setCompletionPhotoUrl(result);
+      setCompletionFileName(file.name);
+      toast.success(`Photo attached: ${file.name}`);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleRemovePhoto = () => {
+    setCompletionPhotoUrl('');
+    setCompletionFileName('');
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
 
   // AI Generator state
   const [genTender, setGenTender] = useState<GovernmentTender>(tenders[0]);
@@ -197,6 +254,8 @@ export function ContractorPortal() {
       setSelectedWorkOrder(null);
       setCompletionSummary('');
       setCompletionPhotoUrl('');
+      setCompletionFileName('');
+      setShowUrlInput(false);
       toast.success('Work submitted for Municipal Inspection! Citizen has been notified.');
     } catch (err: any) {
       toast.error(err.message);
@@ -1150,7 +1209,15 @@ export function ContractorPortal() {
 
       {/* Completion Evidence Submission Modal */}
       {selectedWorkOrder && (
-        <Dialog open={!!selectedWorkOrder} onOpenChange={() => setSelectedWorkOrder(null)}>
+        <Dialog open={!!selectedWorkOrder} onOpenChange={(open) => {
+          if (!open) {
+            setSelectedWorkOrder(null);
+            setCompletionSummary('');
+            setCompletionPhotoUrl('');
+            setCompletionFileName('');
+            setShowUrlInput(false);
+          }
+        }}>
           <DialogContent className="max-w-md bg-white border-slate-200 text-slate-900 shadow-2xl">
             <DialogHeader>
               <DialogTitle className="text-base font-bold text-slate-900 flex items-center gap-2">
@@ -1172,13 +1239,118 @@ export function ContractorPortal() {
               </div>
 
               <div>
-                <label className="text-slate-600 block mb-1">Resolution Evidence Photo URL (After Proof):</label>
-                <Input
-                  value={completionPhotoUrl}
-                  onChange={e => setCompletionPhotoUrl(e.target.value)}
-                  placeholder="Paste URL or leave empty for demo image..."
-                  className="bg-slate-50 border-slate-200 text-slate-900 text-xs focus:bg-white"
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="text-slate-700 font-semibold block">
+                    Resolution Evidence Photo (After Proof):
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => setShowUrlInput(!showUrlInput)}
+                    className="text-[11px] text-teal-600 hover:text-teal-700 font-medium hover:underline"
+                  >
+                    {showUrlInput ? 'Switch to Device Upload' : 'Or Paste Image URL'}
+                  </button>
+                </div>
+
+                {/* Hidden File Input for Device Upload */}
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  accept="image/*"
+                  onChange={handleDeviceFileUpload}
+                  className="hidden"
                 />
+
+                {!showUrlInput ? (
+                  <>
+                    {!completionPhotoUrl ? (
+                      /* Device Upload Dropzone */
+                      <div
+                        onDragOver={(e) => e.preventDefault()}
+                        onDrop={handleDropFile}
+                        onClick={() => fileInputRef.current?.click()}
+                        className="border-2 border-dashed border-teal-300 dark:border-teal-700 hover:border-teal-500 bg-teal-50/40 hover:bg-teal-50/80 rounded-xl p-4 text-center cursor-pointer transition-all group"
+                      >
+                        <div className="w-10 h-10 rounded-full bg-teal-100 flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform text-teal-600">
+                          <Camera className="w-5 h-5" />
+                        </div>
+                        <p className="text-xs font-bold text-slate-800">
+                          Click to upload from device or drag photo here
+                        </p>
+                        <p className="text-[11px] text-slate-500 mt-0.5">
+                          Camera photo, gallery image (JPG, PNG, WEBP up to 10MB)
+                        </p>
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          className="mt-2.5 h-7 text-[11px] bg-white border-teal-300 text-teal-700 hover:bg-teal-100 font-semibold rounded-lg pointer-events-none"
+                        >
+                          <Upload className="w-3 h-3 mr-1" /> Choose from Device
+                        </Button>
+                      </div>
+                    ) : (
+                      /* Image Preview Card */
+                      <div className="relative rounded-xl border border-teal-200 bg-slate-50 overflow-hidden p-2">
+                        <div className="relative h-40 w-full rounded-lg overflow-hidden bg-slate-900/10">
+                          <img
+                            src={completionPhotoUrl}
+                            alt="Resolution Evidence Preview"
+                            className="w-full h-full object-cover"
+                          />
+                          <button
+                            type="button"
+                            onClick={handleRemovePhoto}
+                            className="absolute top-2 right-2 bg-slate-900/70 hover:bg-red-600 text-white p-1 rounded-full shadow-md transition-colors"
+                            title="Remove Photo"
+                          >
+                            <X className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                        <div className="flex items-center justify-between mt-2 px-1">
+                          <span className="text-[11px] text-slate-600 truncate max-w-[220px] font-medium flex items-center gap-1">
+                            <Check className="w-3.5 h-3.5 text-emerald-600" />
+                            {completionFileName || 'Device Photo Attached'}
+                          </span>
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => fileInputRef.current?.click()}
+                            className="h-6 px-2 text-[11px] text-teal-600 hover:text-teal-700 hover:bg-teal-50"
+                          >
+                            Replace Photo
+                          </Button>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  /* Fallback URL Input */
+                  <div className="space-y-1.5">
+                    <Input
+                      value={completionPhotoUrl}
+                      onChange={e => {
+                        setCompletionPhotoUrl(e.target.value);
+                        setCompletionFileName('');
+                      }}
+                      placeholder="Paste image URL (e.g. https://...)..."
+                      className="bg-slate-50 border-slate-200 text-slate-900 text-xs focus:bg-white h-9"
+                    />
+                    {completionPhotoUrl && (
+                      <div className="relative h-28 w-full rounded-lg overflow-hidden border border-slate-200 mt-1.5">
+                        <img
+                          src={completionPhotoUrl}
+                          alt="Preview"
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            (e.target as any).style.display = 'none';
+                          }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
 
               <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 text-[11px] text-slate-600">
